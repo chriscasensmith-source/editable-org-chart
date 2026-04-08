@@ -1,68 +1,71 @@
 # Editable Org Chart Tool
 
-## What this project is
+A lightweight, business-friendly org chart app powered by a single CSV source file.
 
-This project is for building a simple, editable org chart tool based on one source data table.
+## What this tool does
 
-The goal is to stop manually redrawing org charts every time something changes.
+- Builds a **true top-down org chart tree** from `org_data.csv`.
+- Uses **Nichole Jones (`R001`)** as the single root node.
+- Supports two views:
+  - **Current State**
+  - **Proposed Future State**
+- Shows reporting lines from `manager_role_id`.
+- Highlights vacant roles clearly.
+- Uses neutral `performance_band` statuses with color coding.
+- Shows extra future-planning focus fields in Future view.
+- Includes print-friendly layout for PDF export.
 
-Instead, the org chart will be generated from a data file that can be updated as roles, reporting lines, and vacancies change.
+## Project files
 
-## Reference files
+- `index.html` — single-page app (plain HTML/CSS/JavaScript).
+- `org_data.csv` — editable source of truth.
+- `current_org_chart.xlsx` / `future_org_chart.xlsx` — reference inputs only.
 
-These files are reference inputs only:
+## Run locally
 
-- current_org_chart.xlsx
-- future_org_chart.xlsx
+Because browsers block CSV loading in many `file://` cases, run a tiny local server:
 
-They are not meant to be the long term source of truth.
+```bash
+python3 -m http.server 8000
+```
 
-## Source of truth
+Open:
 
-The long term source of truth for this tool should be a single editable data table.
+- `http://localhost:8000`
 
-That file will likely be:
+## Data model (`org_data.csv`)
 
-- org_data.csv
+Required columns:
 
-This file will contain one row per role for the current state and future state.
+```text
+role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,future_focus_1,future_focus_2,future_focus_3,notes
+```
 
-## What the tool should do
+### Field rules
 
-The tool should:
+- `scenario`: `current` or `future`
+- `role_id`: stable across scenarios for the same logical role
+- `manager_role_id`: points to another `role_id` to define reporting lines
+- `role_status`: use `vacant` for open roles; leave `employee_name` blank for vacant roles
+- `performance_band`: neutral status values only:
+  - `needs_support`
+  - `solid`
+  - `strong`
+- `future_focus_1` / `future_focus_2` / `future_focus_3`:
+  - planning priorities shown in **Proposed Future State** cards
+  - can be blank for current-state rows
 
-- show a Current State view
-- show a Proposed Future State view
-- show reporting lines clearly
-- make vacant roles easy to identify
-- be easy to print or export for presentations
-- be simple for business users to understand
+## How to update
 
-## Expected data fields
+1. Edit `org_data.csv`.
+2. Keep one row per role per scenario.
+3. Keep `role_id` consistent between current/future rows.
+4. Update `manager_role_id` when reporting lines change.
+5. Add or update future planning with `future_focus_1..3` on future rows.
+6. Refresh the page.
 
-The editable data table should include fields like:
+No manual box drawing is needed—the chart is rendered from the CSV.
 
-- role_id
-- scenario
-- employee_name
-- title
-- manager_role_id
-- department
-- state
-- role_status
-- notes
+## Printing / export
 
-## How updates should work later
-
-Once the tool is built, updates should be made in the data table instead of manually editing the org chart.
-
-Examples:
-- if a person changes roles, update the row
-- if a role becomes vacant, change role_status
-- if a new future role is proposed, add a future row
-- if reporting lines change, update manager_role_id
-
-## Notes
-
-The Excel org charts are only starting references.
-The maintainable version of this project should be driven by structured data, not by manually drawn boxes.
+Use browser print (`Ctrl/Cmd + P`) and save as PDF. The page includes print styles for presentation output.
