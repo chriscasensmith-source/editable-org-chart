@@ -1,0 +1,71 @@
+role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,notes
+R001,current,Nichole Jones,VP Manufacturing North America,,All Operations,current,filled,Top operations leader from current org chart
+R001,future,Nichole Jones,VP Manufacturing North America,,All Operations,future,filled,Assumed unchanged (not explicitly listed in future workbook)
+R002,current,Anthony Denina,Director Packaging Operations,R001,Packaging Operations,current,filled,
+R002,future,Anthony Denina,Director Packaging Operations,R001,Packaging Operations,future,filled,Future workbook suggests broader safety focus; kept core title for continuity
+R003,current,Kim Hicks,Director Processing Operations,R001,Processing Operations,current,filled,
+R003,future,Kim Hicks,Director Processing Operations,R001,Processing Operations,future,filled,Future workbook includes Kim in director-level data; reporting line assumed unchanged
+R004,current,Amy Ruiz,Manager Manufacturing COE,R001,Manufacturing COE,current,filled,
+R004,future,Amy Ruiz,Manager Manufacturing COE,R001,Manufacturing COE,future,filled,Future workbook spells out transformation/engineering focus
+R005,current,Edward Ballo,Contractor - Executive Support,R001,Executive Support,current,filled,Contractor role
+R005,future,Edward Ballo,Contractor - Executive Support,R001,Executive Support,future,filled,Assumed retained
+R006,current,Mitch,Contractor - Reliability Maintenance,R005,Reliability,current,filled,Contractor role
+R006,future,Mitch,Contractor - Reliability Maintenance,R005,Reliability,future,filled,Assumed retained
+R007,current,Haley Buckley,Manager Production Operations,R002,Packaging Operations,current,filled,
+R007,future,Haley Buckley,Manager Production Operations,R002,Packaging Operations,future,filled,Future workbook indicates expanded scope (Cell 1/2/3)
+R008,current,Bernard Filic,Manager Packaging Operations,R002,Packaging Operations,current,filled,
+R008,future,Bernard Filic,Manager Packaging Operations,R002,Packaging Operations,future,filled,Future workbook indicates broader warehouse/processing/packaging scope
+R009,current,Kimberly Nunez,Manager Warehouse,R002,Warehouse,current,filled,
+R009,future,Kimberly Nunez,Manager Warehouse,R002,Warehouse,future,filled,
+R010,current,Joe Primm,Team Lead IV - Reliability,R002,Reliability,current,filled,
+R010,future,Joe Primm,Team Lead IV - Reliability,R002,Reliability,future,filled,Future workbook categorizes as reliability team lead
+R011,current,Jade Castle,Shift Lead,R007,Packaging Operations,current,filled,1st shift
+R011,future,Jade Castle,Shift Lead,R007,Packaging Operations,future,filled,Future workbook keeps TL scope
+R012,current,Ron Peterson,Shift Lead,R007,Packaging Operations,current,filled,2nd shift
+R012,future,Ron Petersen,Shift Lead,R007,Packaging Operations,future,filled,Last name spelled Petersen in future workbook
+R013,current,Dat,Contractor Engineer,R007,Engineering,current,filled,Contractor role
+R013,future,Dat,Contractor Engineer,R007,Engineering,future,filled,Assumed retained
+R014,current,Juan Ramirez,Shift Lead,R008,Packaging Operations,current,filled,Mon-Wed day
+R014,future,Juan Rimirez,Shift Lead,R008,Packaging Operations,future,filled,Future workbook spelling is Rimirez
+R015,current,Shane Bishop,Shift Lead,R008,Packaging Operations,current,filled,Mon-Wed night
+R015,future,Shane Bishop,Shift Lead,R008,Packaging Operations,future,filled,
+R016,current,,Shift Lead,R008,Packaging Operations,current,vacant,Thu-Sat day open role from current org chart
+R016,future,,Shift Lead,R008,Packaging Operations,future,vacant,No confirmed assignee in future workbook
+R017,current,Tim Riggle,Shift Lead,R008,Packaging Operations,current,filled,Thu-Sat night
+R017,future,Tim Riggle,Shift Lead,R008,Packaging Operations,future,filled,
+R018,current,Michael Orrson,Team Lead II,R009,Warehouse,current,filled,
+R018,future,Michael Orrson,Team Lead II,R009,Warehouse,future,filled,
+R019,current,Veronica Zapata,Team Lead III - Central Weigh,R003,Processing Operations,current,filled,
+R019,future,Veronica Zapata,Team Lead III - Central Weigh,R003,Processing Operations,future,filled,
+R020,current,Mohamed Kambal,Team Lead II,R003,Processing Operations,current,filled,Mon-Wed day
+R020,future,Mohamed Kambal,Team Lead II,R003,Processing Operations,future,filled,
+R021,current,Maria Anevel Bergreen,Team Lead II,R003,Processing Operations,current,filled,Mon-Wed night
+R021,future,Maria Bergreen,Team Lead II,R003,Processing Operations,future,filled,Future workbook omits middle name
+R022,current,Kashima Pollard,Team Lead II,R003,Processing Operations,current,filled,Thu-Sat day
+R022,future,Kashima Pollard,Team Lead II,R003,Processing Operations,future,filled,
+R023,current,BJ Jagatheesan,Team Lead II,R003,Processing Operations,current,filled,Thu-Sat night
+R023,future,BJ Jagatheesan,Team Lead II,R003,Processing Operations,future,filled,
+R024,current,Adam Escalante,Team Lead I - Sanitation,R003,Processing Operations,current,filled,
+R024,future,Adam Escalante,Team Lead I - Sanitation,R003,Processing Operations,future,filled,
+R025,current,Jerry Nunez,Team Lead III - Reliability/PUR,R003,Processing Operations,current,filled,
+R025,future,Jerry Nunez,Team Lead III - Reliability/PUR,R003,Processing Operations,future,filled,
+R026,current,Erica Bush,Manager Process Engineering,R003,Process Engineering,current,filled,
+R026,future,Erica Bush,Manager Process Engineering,R003,Process Engineering,future,filled,Future workbook lists engineering leader in high-potential category
+R027,current,James David Eaton,Cleaning Engineer,R026,Process Engineering,current,filled,
+R027,future,James-David Eaton,Cleaning Engineer,R026,Process Engineering,future,filled,Hyphenated first name in future workbook
+R028,current,Emmie Fleck,Engineer,R026,Process Engineering,current,filled,
+R028,future,Emmie Fleck,Engineer,R026,Process Engineering,future,filled,Assumed retained (not listed explicitly)
+R029,current,Manahor,Principal Controls Engineer,R026,Process Engineering,current,filled,
+R029,future,Manahor,Principal Controls Engineer,R026,Process Engineering,future,filled,Assumed retained (not listed explicitly)
+R030,current,Chloe Neumeyer,Engineer Operations,R004,Manufacturing COE,current,filled,
+R030,future,Chloe Neumeyer,Engineer Operations,R004,Manufacturing COE,future,filled,
+R031,current,Kenia Cruz,Engineer Operations,R004,Manufacturing COE,current,filled,
+R031,future,Kenia Cruz,Engineer Operations,R004,Manufacturing COE,future,filled,
+R032,current,Chris Stevens,Engineer Operations,R004,Manufacturing COE,current,filled,
+R032,future,Christopher Stevens,Engineer Operations,R004,Manufacturing COE,future,filled,Future workbook uses full first name Christopher
+R033,current,Dominic Johnson,Sr Engineer Operations,R004,Manufacturing COE,current,filled,
+R033,future,Dominic Johnson,Sr Engineer Operations,R004,Manufacturing COE,future,filled,
+R034,current,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,current,filled,
+R034,future,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,future,filled,Assumed retained (not listed explicitly)
+R035,current,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,current,filled,
+R035,future,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,future,filled,Future workbook suggests increased communications/culture emphasis

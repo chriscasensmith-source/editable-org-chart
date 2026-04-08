@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editable Org Chart</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --line: #cbd5e1;
+      --accent: #1d4ed8;
+      --accent-soft: #dbeafe;
+      --vacant: #fff7ed;
+      --vacant-border: #f97316;
+      --filled-border: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 { margin: 0 0 10px; font-size: 1.7rem; }
+    .subtitle { color: var(--muted); margin-bottom: 16px; }
+
+    .controls {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      width: fit-content;
+    }
+
+    .tab-btn {
+      border: 0;
+      background: white;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #334155;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-soft);
+      color: #0f172a;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label { font-size: 0.92rem; color: #334155; }
+
+    select {
+      margin-left: 6px;
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      min-width: 180px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      border-radius: 50%;
+      margin-right: 6px;
+      transform: translateY(1px);
+    }
+
+    .dot-filled { background: #2563eb; }
+    .dot-vacant { background: #f97316; }
+
+    .chart-wrap {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      overflow: auto;
+      min-height: 420px;
+    }
+
+    .org-root,
+    .org-root ul {
+      list-style: none;
+      margin: 0;
+      padding-left: 26px;
+      position: relative;
+    }
+
+    .org-root > li { padding-left: 0; }
+
+    .org-root ul::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 9px;
+      bottom: 10px;
+      border-left: 2px solid var(--line);
+    }
+
+    .org-node {
+      position: relative;
+      margin: 12px 0;
+      padding-left: 20px;
+    }
+
+    .org-node::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 24px;
+      width: 11px;
+      border-top: 2px solid var(--line);
+    }
+
+    .org-root > li > .org-node::before { display: none; }
+
+    .card {
+      border: 1px solid var(--filled-border);
+      border-left: 6px solid #2563eb;
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 12px;
+      min-width: 310px;
+      max-width: 540px;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    }
+
+    .card.vacant {
+      background: var(--vacant);
+      border-color: var(--vacant-border);
+      border-left-color: var(--vacant-border);
+    }
+
+    .name {
+      font-weight: 800;
+      margin-bottom: 2px;
+      color: #0f172a;
+    }
+
+    .vacant .name { color: #9a3412; }
+
+    .meta {
+      color: #334155;
+      font-size: 0.94rem;
+      margin-bottom: 2px;
+    }
+
+    .minor {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .note {
+      margin-top: 6px;
+      font-size: 0.84rem;
+      color: #475569;
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 7px;
+      padding: 4px 6px;
+    }
+
+    .empty {
+      color: #64748b;
+      padding: 20px;
+      border: 1px dashed #94a3b8;
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .help {
+      margin-top: 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: #1e3a8a;
+      font-size: 0.95rem;
+    }
+
+    .help code {
+      background: #dbeafe;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    @media print {
+      body { background: white; }
+      .controls, .help { break-inside: avoid; }
+      .chart-wrap {
+        border: 0;
+        padding: 4px 0;
+        overflow: visible;
+      }
+      .card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+      .tab-btn { border: 1px solid #ddd; }
+      @page {
+        size: landscape;
+        margin: 0.5in;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Operations Org Chart</h1>
+    <div class="subtitle">Single source of truth: <strong>org_data.csv</strong></div>
+
+    <div class="controls">
+      <div class="tabs" role="tablist" aria-label="Scenario switcher">
+        <button class="tab-btn active" data-scenario="current" role="tab" aria-selected="true">Current State</button>
+        <button class="tab-btn" data-scenario="future" role="tab" aria-selected="false">Proposed Future State</button>
+      </div>
+
+      <div class="filter-row">
+        <label>Department
+          <select id="departmentFilter">
+            <option value="">All departments</option>
+          </select>
+        </label>
+
+        <label>State
+          <select id="stateFilter">
+            <option value="">All states</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot dot-filled"></span>Filled role</span>
+        <span><span class="dot dot-vacant"></span>Vacant role</span>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <div id="chart"></div>
+    </div>
+
+    <div class="help">
+      <strong>How to update this chart:</strong> edit <code>org_data.csv</code> only.
+      Keep one row per role per scenario, maintain stable <code>role_id</code> values across scenarios,
+      and update <code>manager_role_id</code> when reporting lines change.
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      scenario: 'current',
+      rows: [],
+      filters: {
+        department: '',
+        state: ''
+      }
+    };
+
+    const chartEl = document.getElementById('chart');
+    const departmentFilterEl = document.getElementById('departmentFilter');
+    const stateFilterEl = document.getElementById('stateFilter');
+
+    function parseCSV(text) {
+      const rows = [];
+      let current = '';
+      let inQuotes = false;
+      let row = [];
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(current);
+          current = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (char === '\r' && next === '\n') i++;
+          row.push(current);
+          current = '';
+          if (row.some(cell => cell !== '')) rows.push(row);
+          row = [];
+        } else {
+          current += char;
+        }
+      }
+
+      if (current !== '' || row.length) {
+        row.push(current);
+        rows.push(row);
+      }
+
+      if (!rows.length) return [];
+
+      const headers = rows[0].map(h => h.trim());
+      return rows.slice(1).map((values) => {
+        const obj = {};
+        headers.forEach((key, index) => {
+          obj[key] = (values[index] || '').trim();
+        });
+        return obj;
+      });
+    }
+
+    function toTitleCase(value) {
+      if (!value) return '';
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
+
+    function loadFilters() {
+      const departments = [...new Set(state.rows.map(r => r.department).filter(Boolean))].sort();
+      const states = [...new Set(state.rows.map(r => r.state).filter(Boolean))].sort();
+
+      departments.forEach(dep => {
+        const opt = document.createElement('option');
+        opt.value = dep;
+        opt.textContent = dep;
+        departmentFilterEl.appendChild(opt);
+      });
+
+      states.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        stateFilterEl.appendChild(opt);
+      });
+    }
+
+    function createNodeCard(role) {
+      const card = document.createElement('div');
+      card.className = `card ${role.role_status === 'vacant' ? 'vacant' : ''}`;
+
+      const displayName = role.employee_name || 'VACANT';
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = displayName;
+
+      const title = document.createElement('div');
+      title.className = 'meta';
+      title.textContent = role.title;
+
+      const meta = document.createElement('div');
+      meta.className = 'minor';
+      meta.textContent = `${role.department || 'Unassigned'} • ${toTitleCase(role.state || 'unspecified')} • ${toTitleCase(role.role_status || 'unknown')}`;
+
+      card.append(name, title, meta);
+
+      if (role.notes) {
+        const note = document.createElement('div');
+        note.className = 'note';
+        note.textContent = role.notes;
+        card.appendChild(note);
+      }
+
+      return card;
+    }
+
+    function buildTree(filteredRows) {
+      const byId = new Map(filteredRows.map(r => [r.role_id, { ...r, children: [] }]));
+      const roots = [];
+
+      byId.forEach(node => {
+        const managerId = node.manager_role_id;
+        if (managerId && byId.has(managerId)) {
+          byId.get(managerId).children.push(node);
+        } else {
+          roots.push(node);
+        }
+      });
+
+      const sorter = (a, b) => a.title.localeCompare(b.title) || (a.employee_name || '').localeCompare(b.employee_name || '');
+      function sortTree(node) {
+        node.children.sort(sorter);
+        node.children.forEach(sortTree);
+      }
+      roots.sort(sorter);
+      roots.forEach(sortTree);
+
+      return roots;
+    }
+
+    function renderNode(node) {
+      const li = document.createElement('li');
+      const nodeWrap = document.createElement('div');
+      nodeWrap.className = 'org-node';
+      nodeWrap.appendChild(createNodeCard(node));
+      li.appendChild(nodeWrap);
+
+      if (node.children.length) {
+        const ul = document.createElement('ul');
+        node.children.forEach(child => ul.appendChild(renderNode(child)));
+        li.appendChild(ul);
+      }
+
+      return li;
+    }
+
+    function renderChart() {
+      const rowsForScenario = state.rows.filter(r => r.scenario === state.scenario);
+      const filteredRows = rowsForScenario.filter(r => {
+        if (state.filters.department && r.department !== state.filters.department) return false;
+        if (state.filters.state && r.state !== state.filters.state) return false;
+        return true;
+      });
+
+      chartEl.innerHTML = '';
+
+      if (!filteredRows.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No roles match the selected scenario/filter combination.';
+        chartEl.appendChild(empty);
+        return;
+      }
+
+      const tree = buildTree(filteredRows);
+      const ul = document.createElement('ul');
+      ul.className = 'org-root';
+      tree.forEach(node => ul.appendChild(renderNode(node)));
+      chartEl.appendChild(ul);
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          state.scenario = button.dataset.scenario;
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          button.classList.add('active');
+          button.setAttribute('aria-selected', 'true');
+          renderChart();
+        });
+      });
+
+      departmentFilterEl.addEventListener('change', (event) => {
+        state.filters.department = event.target.value;
+        renderChart();
+      });
+
+      stateFilterEl.addEventListener('change', (event) => {
+        state.filters.state = event.target.value;
+        renderChart();
+      });
+    }
+
+    async function loadData() {
+      try {
+        const response = await fetch('org_data.csv');
+        if (!response.ok) throw new Error('Could not load org_data.csv');
+        const csvText = await response.text();
+        state.rows = parseCSV(csvText);
+
+        if (!state.rows.length) {
+          throw new Error('org_data.csv loaded but no rows were parsed.');
+        }
+
+        loadFilters();
+        bindEvents();
+        renderChart();
+      } catch (error) {
+        chartEl.innerHTML = '';
+        const errorBox = document.createElement('div');
+        errorBox.className = 'empty';
+        errorBox.innerHTML = `
+          <strong>Could not load org_data.csv.</strong><br><br>
+          This usually happens when opening <code>index.html</code> directly as a <code>file://</code> URL.
+          Start a small local server instead (example: <code>python3 -m http.server 8000</code>) and open
+          <code>http://localhost:8000</code>.
+        `;
+        chartEl.appendChild(errorBox);
+        console.error(error);
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
