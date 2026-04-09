@@ -245,35 +245,24 @@
 <body>
   <div class="container">
     <h1>Operations Org Chart</h1>
-    <div class="subtitle">Single source of truth: <strong>org_data.csv</strong></div>
+    <div class="subtitle">Source of truth: <strong>org_data.csv</strong></div>
+    <div id="dataSourceMessage" class="subtitle"></div>
 
     <div class="controls">
-      <div class="tabs" role="tablist" aria-label="Scenario switcher">
-        <button class="tab-btn active" data-scenario="current" role="tab" aria-selected="true">Current State</button>
-        <button class="tab-btn" data-scenario="future" role="tab" aria-selected="false">Proposed Future State</button>
+      <div class="tabs" role="tablist" aria-label="Scenario toggle">
+        <button class="tab-btn active" data-scenario="current">Current State</button>
+        <button class="tab-btn" data-scenario="future">Proposed Future State</button>
       </div>
 
-      <div class="filter-row">
-        <label>Department
-          <select id="departmentFilter">
-            <option value="">All departments</option>
-          </select>
-        </label>
-
-        <label>State
-          <select id="stateFilter">
-            <option value="">All states</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="legend">
-        <span><span class="dot dot-filled"></span>Filled role</span>
-        <span><span class="dot dot-vacant"></span>Vacant role</span>
+      <div class="legend" aria-label="Legend">
+        <span class="pill"><span class="swatch" style="background:#f97316"></span>Vacant</span>
+        <span class="pill"><span class="swatch" style="background:#b45309"></span>Needs support</span>
+        <span class="pill"><span class="swatch" style="background:#0f766e"></span>Solid</span>
+        <span class="pill"><span class="swatch" style="background:#2563eb"></span>Strong</span>
       </div>
     </div>
 
-    <div class="chart-wrap">
+    <div class="chart-shell">
       <div id="chart"></div>
     </div>
 
