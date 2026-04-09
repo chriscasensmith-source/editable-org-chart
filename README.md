@@ -1,83 +1,69 @@
 # Editable Org Chart Tool
 
-A lightweight, business-friendly org chart app powered by a single CSV source file.
+A lightweight single-page org chart app driven by one editable CSV file.
 
-## What this tool does
+## What this project does
 
-- Builds a **true top-down org chart tree** from `org_data.csv`.
-- Uses **Nichole Jones (`R001`)** as the single root node.
-- Supports two views:
+- Reads `org_data.csv` as the source of truth.
+- Shows two scenario views:
   - **Current State**
   - **Proposed Future State**
-- Shows reporting lines from `manager_role_id`.
+- Uses `manager_role_id` to draw reporting lines.
 - Highlights vacant roles clearly.
-- Uses neutral `performance_band` statuses with color coding.
-- Shows extra future-planning focus fields in Future view.
-- Includes print-friendly layout for PDF export.
+- Provides simple filters for **department** and **state**.
+- Supports print/export to PDF with a print-friendly layout.
 
-## Project files
+## Files
 
-- `index.html` — single-page app (plain HTML/CSS/JavaScript).
-- `org_data.csv` — editable source of truth.
-- `current_org_chart.xlsx` / `future_org_chart.xlsx` — reference inputs only.
+- `index.html` — the app (plain HTML/CSS/JavaScript, no framework).
+- `org_data.csv` — editable source data table.
+- `current_org_chart.xlsx` and `future_org_chart.xlsx` — reference files only.
 
-## Run locally
+## How to run
 
-Because browsers block CSV loading in many `file://` cases, run a tiny local server:
+Because browsers often block local CSV fetches from `file://`, use a tiny local server:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Open:
+Then open:
 
 - `http://localhost:8000`
 
-## Publish on GitHub Pages (important)
+This is the simplest reliable way to let `index.html` load `org_data.csv`.
 
-Use this checklist so the page works after publishing:
+## How to use
 
-1. Push **both** `index.html` and `org_data.csv` to the branch used by GitHub Pages.
-2. In repo settings, enable Pages and point it to the correct branch/folder.
-3. Wait for Pages to rebuild, then hard refresh the site.
+1. Open the page.
+2. Click **Current State** or **Proposed Future State**.
+3. Optionally filter by **Department** and **State**.
+4. Use browser print (`Ctrl/Cmd + P`) to export to PDF.
 
-The app first tries to load `org_data.csv`.  
-If that load fails, it falls back to embedded data in `index.html` and shows a message at the top.
-That means the page still renders, but updates in `org_data.csv` will not appear until the CSV is correctly published.
+## How to update data (important)
 
-## Data model (`org_data.csv`)
+Update **only** `org_data.csv` for org changes.
 
-Required columns:
+### Required columns
 
 ```text
-role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,future_focus_1,future_focus_2,future_focus_3,notes
+role_id, scenario, employee_name, title, manager_role_id, department, state, role_status, notes
 ```
 
-### Field rules
+### Data rules
 
-- `scenario`: `current` or `future`
-- `role_id`: stable across scenarios for the same logical role
-- `manager_role_id`: points to another `role_id` to define reporting lines
-- `role_status`: use `vacant` for open roles; leave `employee_name` blank for vacant roles
-- `performance_band`: neutral status values only:
-  - `needs_support`
-  - `solid`
-  - `strong`
-- `future_focus_1` / `future_focus_2` / `future_focus_3`:
-  - planning priorities shown in **Proposed Future State** cards
-  - can be blank for current-state rows
+- `scenario` must be `current` or `future`.
+- Keep the same `role_id` across scenarios for the same logical role.
+- Use `manager_role_id` to define reporting lines.
+- Use `role_status=vacant` for open roles.
+- Leave `employee_name` blank for vacant roles.
+- Use `notes` when role title, reporting, or proposal status changes.
 
-## How to update
+## Business-friendly editing tips
 
-1. Edit `org_data.csv`.
-2. Keep one row per role per scenario.
-3. Keep `role_id` consistent between current/future rows.
-4. Update `manager_role_id` when reporting lines change.
-5. Add or update future planning with `future_focus_1..3` on future rows.
-6. Refresh the page.
+- Change person in role: update `employee_name` for that row.
+- Move role to a new manager: change `manager_role_id`.
+- Add a proposed future role: add a new row with `scenario=future`.
+- Mark open position: set `role_status=vacant` and clear `employee_name`.
 
-No manual box drawing is needed—the chart is rendered from the CSV.
-
-## Printing / export
-
-Use browser print (`Ctrl/Cmd + P`) and save as PDF. The page includes print styles for presentation output.
+The chart updates automatically from the CSV on page load—no manual box drawing required.
