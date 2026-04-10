@@ -14,6 +14,7 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
 - Includes print-friendly layout for PDF export.
+- Includes an in-browser CSV editor with apply + download actions.
 
 ## Project files
 
@@ -32,6 +33,16 @@ python3 -m http.server 8000
 Open:
 
 - `http://localhost:8000`
+
+## Edit + export workflow
+
+You can now edit data directly in the browser:
+
+1. Click **Edit Data**.
+2. Update CSV text.
+3. Click **Apply Edits** to re-render immediately.
+4. Click **Download CSV** to save your updated file.
+5. Use **Print / Export PDF** for presentation output.
 
 ## Publish on GitHub Pages (important)
 
@@ -64,6 +75,7 @@ role_id,scenario,employee_name,title,manager_role_id,department,state,role_statu
   - `needs_support`
   - `solid`
   - `strong`
+- Current-state rows can leave `performance_band` blank if you do not want ratings shown.
 - `future_focus_1` / `future_focus_2` / `future_focus_3`:
   - planning priorities shown in **Proposed Future State** cards
   - can be blank for current-state rows
