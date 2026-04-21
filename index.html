@@ -3,49 +3,54 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Operations Org Chart</title>
+<title>Editable Org Chart</title>
 <style>
-:root{--bg:#f4f6fa;--line:#bfd0e4;--text:#1f2937}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-.container{padding:14px}
-.controls{position:sticky;top:0;background:#fff;border:1px solid #d7deea;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;z-index:10;flex-wrap:wrap}
-.tab-btn,.action-btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}
-.tab-btn.active{background:#dbeafe}
-.subtitle{color:#64748b;margin:8px 0}
-.chart-shell{background:#fff;border:1px solid #d7deea;border-radius:12px;overflow:auto;height:calc(100vh - 220px);min-height:540px;padding:12px}
-.org-wrap{position:relative;display:inline-block}.org-svg{position:absolute;left:0;top:0;pointer-events:none}
-.node{position:absolute;width:220px;min-height:112px;border:1px solid #b8c4d9;border-radius:10px;padding:10px 10px 8px;box-sizing:border-box;cursor:pointer}
-.node.selected{outline:3px solid #60a5fa}.node.vacant{border-style:dashed}
-.name{font-size:17px;font-weight:800;line-height:1.2}.title{font-size:14px;color:#334155}.meta{font-size:12px;color:#64748b;margin-top:4px}.notes{font-size:11px;color:#475569;border-top:1px dashed rgba(71,85,105,.3);margin-top:6px;padding-top:5px;line-height:1.3}
-.legend{margin-left:auto;display:flex;gap:8px;font-size:12px;color:#475569;flex-wrap:wrap}.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
-.editor{margin-top:10px;background:#fff;border:1px solid #d7deea;border-radius:12px;padding:12px;display:none}.editor.open{display:block}
-.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:8px}.edit-grid label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:4px}
-.edit-grid input,.edit-grid select,.edit-grid textarea{border:1px solid #cbd5e1;border-radius:8px;padding:7px;font:inherit;font-size:13px}
-.edit-grid textarea{min-height:72px}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}
+.container{max-width:1500px;margin:0 auto;padding:14px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #d5deea;border-radius:10px;padding:10px;position:sticky;top:0;z-index:10}
+.btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer}.btn.active{background:#dbeafe}
+.chart-shell{background:#fff;border:1px solid #d5deea;border-radius:12px;padding:14px;overflow:auto;min-height:600px}
+.tree ul{padding-top:24px;position:relative;display:flex;justify-content:center;margin:0;width:max-content}
+.tree li{list-style:none;text-align:center;position:relative;padding:24px 10px 0;min-width:240px}
+.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid #cbd5e1;width:50%;height:24px}
+.tree li::after{right:auto;left:50%;border-left:2px solid #cbd5e1}
+.tree li:only-child::before,.tree li:only-child::after{display:none}.tree li:first-child::before,.tree li:last-child::after{border:0}.tree li:last-child::before{border-right:2px solid #cbd5e1}.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid #cbd5e1;height:24px}
+.card{background:#fff;border:1px solid #b8c4d9;border-left:6px solid #4b83d6;border-radius:10px;padding:10px;text-align:left;max-width:260px;min-height:100px;cursor:pointer}
+.card:hover{box-shadow:0 1px 6px rgba(15,23,42,.12)}.card.vacant{border-left-color:#f97316;background:#fff7ed}
+.name{font-weight:800;font-size:16px}.title{font-size:14px;color:#334155}.meta{font-size:12px;color:#64748b;margin-top:4px}.notes{font-size:11px;color:#475569;margin-top:6px;border-top:1px dashed #cbd5e1;padding-top:5px}
+.legend{margin-left:auto;font-size:12px;color:#64748b}
+#editorModal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50}
+#editorModal.open{display:flex}
+.modal{background:#fff;width:min(760px,95vw);max-height:90vh;overflow:auto;border-radius:12px;padding:14px}
+.modal h3{margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:10px}
+.grid label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:4px}
+.grid input,.grid select,.grid textarea{border:1px solid #cbd5e1;border-radius:8px;padding:8px;font:inherit;font-size:13px}
+.grid textarea{min-height:68px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
 .help{margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;color:#1e3a8a}
-@media print{.controls,.editor,.help,#dataSourceMessage{display:none!important}.chart-shell{height:auto;border:0;overflow:visible;padding:0}@page{size:17in 11in;margin:.25in}}
+@media print{.controls,.help{display:none!important}.chart-shell{border:0;padding:0}@page{size:17in 11in;margin:.25in}}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Operations Org Chart</h1>
-  <div class="subtitle">Source: <strong>org_data.csv</strong></div>
-  <div id="dataSourceMessage" class="subtitle"></div>
-
+  <h1 style="margin:0 0 8px">Operations Org Chart</h1>
   <div class="controls">
-    <button class="tab-btn active" data-scenario="current">Current State</button>
-    <button class="tab-btn" data-scenario="future">Proposed Future State</button>
-    <button id="printBtn" class="action-btn">Print / Export PDF</button>
-    <button id="downloadCsvBtn" class="action-btn">Download Updated CSV</button>
-    <div id="legend" class="legend"></div>
+    <button class="btn active" data-scenario="current">Current State</button>
+    <button class="btn" data-scenario="future">Proposed Future State</button>
+    <button id="downloadBtn" class="btn">Download Updated CSV</button>
+    <button id="printBtn" class="btn">Print / Export PDF</button>
+    <div class="legend">Click a role card to edit</div>
   </div>
 
   <div class="chart-shell"><div id="chart"></div></div>
+  <div class="help">Simple workflow: click card → edit → save. No manual CSV editing needed.</div>
+</div>
 
-  <div id="editorPanel" class="editor">
-    <h3 style="margin:0 0 8px">Edit selected role</h3>
-    <div id="editorHint" class="subtitle" style="margin-top:0">Click any org box to edit fields directly.</div>
-    <div class="edit-grid">
+<div id="editorModal">
+  <div class="modal">
+    <h3>Edit Role</h3>
+    <div class="grid">
       <label>Employee Name<input id="f_employee_name"></label>
       <label>Title<input id="f_title"></label>
       <label>Manager Role ID<input id="f_manager_role_id"></label>
@@ -58,18 +63,15 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:
       <label>Future Focus 3<input id="f_future_focus_3"></label>
       <label style="grid-column:1/-1">Notes<textarea id="f_notes"></textarea></label>
     </div>
-    <div style="margin-top:10px;display:flex;gap:8px">
-      <button id="saveEditsBtn" class="action-btn">Save Changes</button>
-      <button id="clearSelectionBtn" class="action-btn">Clear Selection</button>
+    <div class="modal-actions">
+      <button id="cancelEdit" class="btn">Cancel</button>
+      <button id="saveEdit" class="btn" style="background:#dbeafe">Save</button>
     </div>
   </div>
-
-  <div class="help">You can now edit directly on the page: click a role card, update fields, and save. No manual CSV editing required.</div>
 </div>
 
 <script>
-const state={scenario:'current',rows:[],selectedRoleId:null,rawCSV:''};
-const chartEl=document.getElementById('chart'),legendEl=document.getElementById('legend');
+const state={scenario:'current',rows:[],selectedRoleId:null};
 const EMBEDDED_CSV=`role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
 R001,current,Nichole Jones,VP Manufacturing North America,,All Operations,current,filled,,,,,,Top operations leader from current org chart
 R001,future,Nichole Jones,VP Manufacturing North America,,Executive,future,filled,,,Strategic Transformation,,,Assumed unchanged (not explicitly listed in future workbook)
@@ -141,44 +143,24 @@ R034,current,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,
 R034,future,Scott Fitzsimmons,Specialist PM/Work Orders,R004,Manufacturing COE,future,filled,solid,valued_contributor,PM,Work Orders,Reliability,Assumed retained (not listed explicitly)
 R035,current,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,current,filled,,,,,,
 R035,future,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,future,filled,strong,promotable,Training,Culture,Communications,Future workbook suggests increased communications/culture emphasis`;
-const DEPT_COLORS=['#f2f8ff','#eefaf3','#fff8ec','#f5f0ff','#eef7f7','#fff1f2','#f8f5ef','#ecfbff'];
+const chartEl=document.getElementById('chart');
+const modal=document.getElementById('editorModal');
 
-function parseCSV(t){const rows=[];let c='',q=false,r=[];for(let i=0;i<t.length;i++){const ch=t[i],n=t[i+1];if(ch==='"'){if(q&&n==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c);c='';}else if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&n==='\n')i++;r.push(c);c='';if(r.some(x=>x!==''))rows.push(r);r=[];}else c+=ch;}if(c!==''||r.length){r.push(c);rows.push(r);}if(!rows.length)return[];const h=rows[0].map(x=>x.trim());return rows.slice(1).map(v=>{const o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o;});}
+function parseCSV(t){const rows=[];let c='',q=false,r=[];for(let i=0;i<t.length;i++){const ch=t[i],n=t[i+1];if(ch==='"'){if(q&&n==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c);c='';}else if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&n==='\n')i++;r.push(c);c='';if(r.some(x=>x!==''))rows.push(r);r=[];}else c+=ch;}if(c!==''||r.length){r.push(c);rows.push(r);}const h=rows[0].map(x=>x.trim());return rows.slice(1).map(v=>{const o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o;});}
+function toCSV(rows){if(!rows.length)return '';const fields=Object.keys(rows[0]);const esc=v=>{const s=(v??'').toString();return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};return [fields.join(','),...rows.map(r=>fields.map(f=>esc(r[f])).join(','))].join('\n');}
 function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function perf(v){const m={high_potential:'High Potential',promotable:'Promotable',valued_contributor:'Valued Contributor',placement_issue:'Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
-function toCSV(rows){if(!rows.length)return '';const fields=Object.keys(rows[0]);const escCsv=v=>{const s=(v??'').toString();return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};return [fields.join(','),...rows.map(r=>fields.map(f=>escCsv(r[f])).join(','))].join('\n');}
 
-function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[],width:1,x:0,y:0}]));map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
-function measure(node){if(!node.children.length){node.width=1;return 1;}let total=0;node.children.forEach((c,i)=>{total+=measure(c);if(i)total+=0.45});node.width=Math.max(1,total);return node.width;}
-function place(node,left,depth){node.x=left+node.width/2;node.y=depth;let cur=left;node.children.forEach(c=>{place(c,cur,depth+1);cur+=c.width+0.45;});}
-function flatten(node,arr=[]){arr.push(node);node.children.forEach(c=>flatten(c,arr));return arr;}
-function deptMap(rows){const d=[...new Set(rows.map(r=>r.department||'Unassigned'))].sort();const m={};d.forEach((name,i)=>m[name]=DEPT_COLORS[i%DEPT_COLORS.length]);return m;}
-function renderLegend(colorMap){legendEl.innerHTML=Object.entries(colorMap).slice(0,8).map(([d,c])=>`<span><span class="sw" style="background:${c}"></span>${esc(d)}</span>`).join('');}
+function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
+function renderNode(n){const f=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');const notes=state.scenario==='future'?[n.performance_label,f,n.notes].filter(Boolean).join(' • '):n.notes;return `<li><div class="card ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes?`<div class="notes">${esc(notes)}</div>`:''}</div>${n.children.length?`<ul>${n.children.map(renderNode).join('')}</ul>`:''}</li>`;}
+function render(){const rows=state.rows.filter(r=>r.scenario===state.scenario);const root=buildTree(rows);if(!root){chartEl.innerHTML='<p>Missing root role (R001).</p>';return;}chartEl.innerHTML=`<div class="tree"><ul>${renderNode(root)}</ul></div>`;chartEl.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>openEditor(c.dataset.roleId)));}
 
-function renderOrg(){const rows=state.rows.filter(r=>r.scenario===state.scenario);const root=buildTree(rows);if(!root){chartEl.innerHTML='<div>Missing R001 for selected scenario.</div>';return;}measure(root);place(root,0,0);const nodes=flatten(root);const colorMap=deptMap(rows);renderLegend(colorMap);
-const WX=260,WY=170,NW=220,NH=112,P=30;const maxX=Math.max(...nodes.map(n=>n.x)),maxY=Math.max(...nodes.map(n=>n.y));
-const width=Math.ceil(maxX*WX+NW/2+P),height=Math.ceil((maxY+1)*WY+NH+P);let svg='';
-for(const n of nodes){for(const c of n.children){const x1=n.x*WX,y1=n.y*WY+NH,x2=c.x*WX,y2=c.y*WY,mid=(y1+y2)/2;svg+=`<path d="M${x1} ${y1} V${mid} H${x2} V${y2}" fill="none" stroke="var(--line)" stroke-width="2"/>`;}}
-const html=nodes.map(n=>{const left=n.x*WX-NW/2,top=n.y*WY;const f=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');const notes=state.scenario==='future'?[perf(n.performance_label),f,n.notes].filter(Boolean).join(' • '):n.notes;const bg=colorMap[n.department||'Unassigned']||'#fff';const sel=n.role_id===state.selectedRoleId?'selected':'';return `<div class="node ${sel} ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}" style="left:${left}px;top:${top}px;background:${bg};"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes?`<div class="notes">${esc(notes)}</div>`:''}</div>`;}).join('');
-chartEl.innerHTML=`<div class="org-wrap" style="width:${width}px;height:${height}px"><svg class="org-svg" width="${width}" height="${height}">${svg}</svg>${html}</div>`;
-fitToViewport();
-chartEl.querySelectorAll('.node').forEach(el=>el.addEventListener('click',()=>selectRole(el.dataset.roleId)));
-}
+function openEditor(roleId){state.selectedRoleId=roleId;const r=state.rows.find(x=>x.role_id===roleId&&x.scenario===state.scenario);if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>document.getElementById('f_'+f).value=r[f]||'');modal.classList.add('open');}
+function saveEditor(){const r=state.rows.find(x=>x.role_id===state.selectedRoleId&&x.scenario===state.scenario);if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>r[f]=document.getElementById('f_'+f).value.trim());modal.classList.remove('open');render();}
 
-function fitToViewport(){const shell=document.querySelector('.chart-shell');const wrap=document.querySelector('.org-wrap');if(!shell||!wrap)return;wrap.style.transform='scale(1)';wrap.style.transformOrigin='top left';const scale=Math.min(1,(shell.clientWidth-16)/wrap.offsetWidth);wrap.style.transform=`scale(${scale})`;shell.style.minHeight=`${Math.ceil(wrap.offsetHeight*scale)+24}px`;}
+function bind(){document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>{state.scenario=b.dataset.scenario;document.querySelectorAll('[data-scenario]').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();}));document.getElementById('downloadBtn').addEventListener('click',()=>{const csv=toCSV(state.rows);const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='org_data.csv';a.click();URL.revokeObjectURL(url);});document.getElementById('printBtn').addEventListener('click',()=>window.print());document.getElementById('cancelEdit').addEventListener('click',()=>modal.classList.remove('open'));document.getElementById('saveEdit').addEventListener('click',saveEditor);}
 
-function getSelectedRow(){return state.rows.find(r=>r.role_id===state.selectedRoleId&&r.scenario===state.scenario);} 
-function selectRole(roleId){state.selectedRoleId=roleId;document.getElementById('editorPanel').classList.add('open');const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>{document.getElementById('f_'+f).value=r[f]||'';});renderOrg();}
-
-function saveEdits(){const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>{r[f]=document.getElementById('f_'+f).value.trim();});state.rawCSV=toCSV(state.rows);renderOrg();}
-function clearSelection(){state.selectedRoleId=null;document.getElementById('editorPanel').classList.remove('open');renderOrg();}
-function downloadCsv(){const csv=toCSV(state.rows);const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='org_data.csv';a.click();URL.revokeObjectURL(url);}
-
-function bindEvents(){document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{state.scenario=btn.dataset.scenario;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.selectedRoleId=null;document.getElementById('editorPanel').classList.remove('open');renderOrg();}));
-document.getElementById('saveEditsBtn').addEventListener('click',saveEdits);document.getElementById('clearSelectionBtn').addEventListener('click',clearSelection);document.getElementById('downloadCsvBtn').addEventListener('click',downloadCsv);document.getElementById('printBtn').addEventListener('click',()=>window.print());window.addEventListener('resize',fitToViewport);}
-
-async function loadData(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rawCSV=await r.text();state.rows=parseCSV(state.rawCSV);document.getElementById('dataSourceMessage').textContent='Loaded live data from org_data.csv.';}catch(e){state.rawCSV=EMBEDDED_CSV;state.rows=parseCSV(state.rawCSV);document.getElementById('dataSourceMessage').textContent='Using embedded fallback data.';}bindEvents();renderOrg();}
-loadData();
+async function load(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rows=parseCSV(await r.text());}catch(e){state.rows=parseCSV(EMBEDDED_CSV);}bind();render();}
+load();
 </script>
 </body>
 </html>

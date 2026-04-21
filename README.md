@@ -14,7 +14,6 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
 - Both Current and Future are rendered as compact, executive-ready top-down org trees.
-- Future view is a professional, color-coded board layout that mirrors the future-state org chart format you provided.
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -55,16 +54,6 @@ The **Proposed Future State** tab is now a clean top-down org tree (same structu
 - Straight connector paths
 - Subtle department/function pastel color fills
 - A compact fit-to-screen layout for readability and printing
-The **Proposed Future State** tab is rendered as a structured board (not a generic tree) to match your provided format:
-
-- Executive header and direct-report band.
-- Dedicated Packaging, Processing, and Manufacturing COE sections.
-- Department color coding, including:
-  - Sanitation (Adam Escalante)
-  - Central Weigh (Veronica Zapata)
-  - Processing (Mohamed, Maria, Kashima)
-  - PRC Reliability (Jerry Nunez)
-  - PKG Reliability
 
 ## Publish on GitHub Pages (important)
 
