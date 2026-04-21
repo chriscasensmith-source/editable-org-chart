@@ -1,46 +1,76 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Operations Org Chart</title>
 <style>
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f2f4f8;color:#1f2937}.container{padding:12px}
-.controls{position:sticky;top:0;z-index:10;background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.tab-btn,.action-btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}.tab-btn.active{background:#dbeafe}
-.subtitle{color:#64748b;margin:8px 0}.editor{display:none;margin:10px 0;background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:10px}.editor.open{display:block}.editor textarea{width:100%;min-height:160px;font-family:monospace}
-.chart-shell{background:#fff;border:1px solid #cbd5e1;border-radius:12px;overflow:auto;height:calc(100vh - 220px);min-height:520px;padding:10px}
-
-/* current tree */
-.tree-fit{width:100%;position:relative}.tree{width:max-content;display:flex;justify-content:center;padding:10px;transform-origin:top left}
-.tree ul{padding-top:22px;position:relative;display:flex;justify-content:center;margin:0;width:max-content}.tree li{list-style:none;text-align:center;position:relative;padding:22px 10px 0;min-width:220px}
-.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid #cbd5e1;width:50%;height:22px}.tree li::after{right:auto;left:50%;border-left:2px solid #cbd5e1}
-.tree li:only-child::before,.tree li:only-child::after{display:none}.tree li:first-child::before,.tree li:last-child::after{border:0}.tree li:last-child::before{border-right:2px solid #cbd5e1}.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid #cbd5e1;height:22px}
-.card{background:#fff;border:1px solid #cbd5e1;border-left:6px solid #0f766e;border-radius:10px;padding:10px;text-align:left;min-width:235px;max-width:290px}.card.root{border-left-color:#1d4ed8}.card.vacant{border-left-color:#f97316;background:#fff7ed}
-.name{font-weight:800}.title{color:#334155}.meta{color:#64748b;font-size:.83rem}.badge{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:999px;font-size:.76rem;font-weight:700;background:#eef2ff;color:#1e3a8a}.focus{font-size:.78rem;margin-top:6px;border-top:1px dashed #cbd5e1;padding-top:5px}
-
-/* future board */
-.future-board{min-width:1140px}.future-main{font-size:40px;color:#1f4f80;font-weight:800;text-align:center}.future-sub{text-align:center;color:#5b6773;font-style:italic;margin:6px 0 12px}
-.fbar{background:#2f6fad;color:#fff;padding:8px 12px;font-size:30px;font-weight:800}.exec{max-width:720px;margin:10px auto;background:#275784;color:#fff;text-align:center;padding:16px;border-radius:4px}
-.exec .n{font-size:32px;font-weight:800}.exec .t{font-size:24px;font-weight:700}
-.row5{display:grid;grid-template-columns:repeat(5,1fr);gap:0}.dr{padding:10px;border:1px solid #7fa0c0;text-align:center}.dr .n{font-size:28px;font-weight:800}.dr .t{font-size:21px}.dr .p{font-size:20px;font-weight:700;margin-top:4px}
-.c-support{background:#a7bfd7}.c-pack{background:#abd3b1}.c-proc{background:#e9ddb8}.c-coe{background:#c7beda}
-.sec{margin-top:10px}.sec-h{padding:8px 12px;font-size:32px;font-weight:800}.h-pack{background:#b7d9be;color:#00662a}.h-proc{background:#efe1b8;color:#886000}.h-coe{background:#d2c7e5;color:#5a32a4}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr)}.grid3{display:grid;grid-template-columns:repeat(3,1fr)}
-.box{border:1px solid #89be85;background:#c4e4c6;padding:8px;min-height:128px}.box-proc{border-color:#d9b860;background:#f2df9b}.box-coe{border-color:#8b67c0;background:#d4cae7}
-.box .n{font-size:26px;font-weight:800}.box .t{font-size:20px;font-style:italic}.box .f{font-size:18px;margin-top:6px}.box .p{font-size:18px;margin-top:7px;font-style:italic}
-.notes{font-size:17px;line-height:1.35;padding:8px 4px}
-.tag{display:inline-block;border-radius:999px;padding:1px 7px;font-size:12px;font-weight:700;margin-top:6px}
-.tag-sanitation{background:#dcfce7;color:#14532d}.tag-central{background:#dbeafe;color:#1e3a8a}.tag-processing{background:#fef3c7;color:#92400e}.tag-prc{background:#fee2e2;color:#991b1b}.tag-pkg{background:#ecfccb;color:#365314}
-.summary{margin-top:10px;background:#2f2f32;color:#fff}.summary h3,.legend h3{margin:0;padding:8px 12px;font-size:28px}.sum-grid{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;color:#111}.sum-item{text-align:center;padding:10px}.sum-item .n{font-size:44px;font-weight:800}
-.legend{margin-top:10px;background:#2f2f32;color:#fff}.legend-grid{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;color:#111}.legend-grid>div{padding:8px;border-right:1px solid #ddd;font-size:14px;line-height:1.4}
+:root{--bg:#f4f6fa;--line:#bfd0e4;--text:#1f2937}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+.container{padding:14px}
+.controls{position:sticky;top:0;background:#fff;border:1px solid #d7deea;border-radius:10px;padding:8px;display:flex;gap:8px;align-items:center;z-index:10;flex-wrap:wrap}
+.tab-btn,.action-btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700}
+.tab-btn.active{background:#dbeafe}
+.subtitle{color:#64748b;margin:8px 0}
+.chart-shell{background:#fff;border:1px solid #d7deea;border-radius:12px;overflow:auto;height:calc(100vh - 220px);min-height:540px;padding:12px}
+.org-wrap{position:relative;display:inline-block}.org-svg{position:absolute;left:0;top:0;pointer-events:none}
+.node{position:absolute;width:220px;min-height:112px;border:1px solid #b8c4d9;border-radius:10px;padding:10px 10px 8px;box-sizing:border-box;cursor:pointer}
+.node.selected{outline:3px solid #60a5fa}.node.vacant{border-style:dashed}
+.name{font-size:17px;font-weight:800;line-height:1.2}.title{font-size:14px;color:#334155}.meta{font-size:12px;color:#64748b;margin-top:4px}.notes{font-size:11px;color:#475569;border-top:1px dashed rgba(71,85,105,.3);margin-top:6px;padding-top:5px;line-height:1.3}
+.legend{margin-left:auto;display:flex;gap:8px;font-size:12px;color:#475569;flex-wrap:wrap}.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+.editor{margin-top:10px;background:#fff;border:1px solid #d7deea;border-radius:12px;padding:12px;display:none}.editor.open{display:block}
+.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:8px}.edit-grid label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:4px}
+.edit-grid input,.edit-grid select,.edit-grid textarea{border:1px solid #cbd5e1;border-radius:8px;padding:7px;font:inherit;font-size:13px}
+.edit-grid textarea{min-height:72px}
 .help{margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;color:#1e3a8a}
 @media print{.controls,.editor,.help,#dataSourceMessage{display:none!important}.chart-shell{height:auto;border:0;overflow:visible;padding:0}@page{size:17in 11in;margin:.25in}}
-</style></head><body>
-<div class="container"><h1>Operations Org Chart</h1><div class="subtitle">Source: <strong>org_data.csv</strong></div><div id="dataSourceMessage" class="subtitle"></div>
-<div class="controls"><button class="tab-btn active" data-scenario="current">Current State</button><button class="tab-btn" data-scenario="future">Proposed Future State</button><button id="editToggle" class="action-btn">Edit Data</button><button id="printBtn" class="action-btn">Print / Export PDF</button></div>
-<div id="editorPanel" class="editor"><textarea id="csvEditor"></textarea><div style="margin-top:8px;display:flex;gap:8px"><button id="applyEditsBtn" class="action-btn">Apply Edits</button><button id="downloadCsvBtn" class="action-btn">Download CSV</button></div><div id="editorMessage" class="subtitle"></div></div>
-<div class="chart-shell"><div id="chart"></div></div><div class="help">Current = org tree. Future = professional color-coded board matching your future-state chart, including department color coding for Sanitation, Central Weigh, Processing, PRC Reliability, and PKG Reliability.</div></div>
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Operations Org Chart</h1>
+  <div class="subtitle">Source: <strong>org_data.csv</strong></div>
+  <div id="dataSourceMessage" class="subtitle"></div>
+
+  <div class="controls">
+    <button class="tab-btn active" data-scenario="current">Current State</button>
+    <button class="tab-btn" data-scenario="future">Proposed Future State</button>
+    <button id="printBtn" class="action-btn">Print / Export PDF</button>
+    <button id="downloadCsvBtn" class="action-btn">Download Updated CSV</button>
+    <div id="legend" class="legend"></div>
+  </div>
+
+  <div class="chart-shell"><div id="chart"></div></div>
+
+  <div id="editorPanel" class="editor">
+    <h3 style="margin:0 0 8px">Edit selected role</h3>
+    <div id="editorHint" class="subtitle" style="margin-top:0">Click any org box to edit fields directly.</div>
+    <div class="edit-grid">
+      <label>Employee Name<input id="f_employee_name"></label>
+      <label>Title<input id="f_title"></label>
+      <label>Manager Role ID<input id="f_manager_role_id"></label>
+      <label>Department<input id="f_department"></label>
+      <label>State<input id="f_state"></label>
+      <label>Role Status<select id="f_role_status"><option>filled</option><option>vacant</option></select></label>
+      <label>Performance Label<input id="f_performance_label"></label>
+      <label>Future Focus 1<input id="f_future_focus_1"></label>
+      <label>Future Focus 2<input id="f_future_focus_2"></label>
+      <label>Future Focus 3<input id="f_future_focus_3"></label>
+      <label style="grid-column:1/-1">Notes<textarea id="f_notes"></textarea></label>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button id="saveEditsBtn" class="action-btn">Save Changes</button>
+      <button id="clearSelectionBtn" class="action-btn">Clear Selection</button>
+    </div>
+  </div>
+
+  <div class="help">You can now edit directly on the page: click a role card, update fields, and save. No manual CSV editing required.</div>
+</div>
+
 <script>
-const state={scenario:'current',rows:[],rawCSV:''};const chartEl=document.getElementById('chart');const dataSourceMessageEl=document.getElementById('dataSourceMessage');const editorPanelEl=document.getElementById('editorPanel');const csvEditorEl=document.getElementById('csvEditor');const editorMessageEl=document.getElementById('editorMessage');const EMBEDDED_CSV=`role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
+const state={scenario:'current',rows:[],selectedRoleId:null,rawCSV:''};
+const chartEl=document.getElementById('chart'),legendEl=document.getElementById('legend');
+const EMBEDDED_CSV=`role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
 R001,current,Nichole Jones,VP Manufacturing North America,,All Operations,current,filled,,,,,,Top operations leader from current org chart
 R001,future,Nichole Jones,VP Manufacturing North America,,Executive,future,filled,,,Strategic Transformation,,,Assumed unchanged (not explicitly listed in future workbook)
 R002,current,Anthony Denina,Director Packaging Operations,R001,Packaging Operations,current,filled,,,,,,
@@ -111,33 +141,44 @@ R034,current,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,
 R034,future,Scott Fitzsimmons,Specialist PM/Work Orders,R004,Manufacturing COE,future,filled,solid,valued_contributor,PM,Work Orders,Reliability,Assumed retained (not listed explicitly)
 R035,current,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,current,filled,,,,,,
 R035,future,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,future,filled,strong,promotable,Training,Culture,Communications,Future workbook suggests increased communications/culture emphasis`;
-const id=(rid)=>state.rows.find(r=>r.scenario==='future'&&r.role_id===rid)||null;
+const DEPT_COLORS=['#f2f8ff','#eefaf3','#fff8ec','#f5f0ff','#eef7f7','#fff1f2','#f8f5ef','#ecfbff'];
+
 function parseCSV(t){const rows=[];let c='',q=false,r=[];for(let i=0;i<t.length;i++){const ch=t[i],n=t[i+1];if(ch==='"'){if(q&&n==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c);c='';}else if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&n==='\n')i++;r.push(c);c='';if(r.some(x=>x!==''))rows.push(r);r=[];}else c+=ch;}if(c!==''||r.length){r.push(c);rows.push(r);}if(!rows.length)return[];const h=rows[0].map(x=>x.trim());return rows.slice(1).map(v=>{const o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o;});}
 function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function pl(v){const m={high_potential:'⭐ High Potential',promotable:'📈 Promotable',valued_contributor:'✓ Valued Contributor',placement_issue:'⚠️ Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
-function focus(r){return[r.future_focus_1,r.future_focus_2,r.future_focus_3].filter(Boolean).join(' | ')}
-function renderCurrentTree(){const rows=state.rows.filter(r=>r.scenario==='current');const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root){chartEl.innerHTML='<div>Missing R001 in current.</div>';return;}const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));
-const node=n=>`<li><div class="card ${n.role_status==='vacant'?'vacant':''} ${n.role_id==='R001'?'root':''}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div></div>${n.children.length?`<ul>${n.children.map(node).join('')}</ul>`:''}</li>`;
-chartEl.innerHTML=`<div class="tree-fit"><div class="tree" id="orgTree"><ul>${node(root)}</ul></div></div>`;fitCurrent();}
-function cell(r,cls,tag=''){if(!r)return`<div class="${cls}"></div>`;const t=tag?`<div><span class="tag ${tag}">${tag.replace('tag-','').replace('central','central weigh').replace('prc','PRC reliability').replace('pkg','PKG reliability')}</span></div>`:'';return `<div class="${cls}"><div class="n">${esc(r.employee_name||'Open')}</div><div class="t">${esc(r.title||'')}</div><div class="f">${esc(focus(r))}</div>${t}<div class="p">${esc(pl(r.performance_label))}</div></div>`}
-function dr(r,cls,icon=''){if(!r)return'';return `<div class="dr ${cls}"><div class="n">${icon} ${esc(r.employee_name||'Open')}</div><div class="t">${esc(r.title)}</div><div class="p">${esc(pl(r.performance_label))}</div></div>`}
-function renderFutureBoard(){const counts={high_potential:0,promotable:0,valued_contributor:0,placement_issue:0,vacancy:0};state.rows.filter(r=>r.scenario==='future').forEach(r=>{if(r.role_status==='vacant')counts.vacancy++;if(counts[r.performance_label]!=null)counts[r.performance_label]++;});
-chartEl.innerHTML=`<div class="future-board"><div class="future-main">FUTURE STATE ORG CHART</div><div class="future-sub">Supply Chain  •  Future Focus Areas  •  Based on CURRENT Perceived Performance</div>
-<div class="exec"><div class="n">NICHOLE JONES</div><div class="t">VP Manufacturing North America</div><div class="t">Strategic Transformation</div></div>
-<div class="fbar">▼ LEVEL 2: DIRECT REPORTS TO VP</div><div class="row5">${dr(id('R005'),'c-support','📋')}${dr(id('R003'),'c-pack','⚙️')}${dr(id('R026'),'c-proc','⚙️')}${dr(id('R004'),'c-coe','🏭')}${dr(id('R009'),'c-support','🛡️')}</div>
-<div class="sec"><div class="sec-h h-pack">📦 PACKAGING OPERATIONS</div><div class="grid4">${cell(id('R008'),'box')}${cell(id('R007'),'box')}${cell(id('R011'),'box')}${cell(id('R016'),'box','tag-pkg')}</div><div class="notes">↳ Joe Primm (M-W DS) — Ops | Safety | Quality<br>↳ Shane Bishop (M-W NS) — Ops | Safety | SMED (Valued Contributor)<br>↳ [OPEN] ⚠️ Thu-Sat NS<br>↳ BJ Jagatheesan (Thu-Sat DS) — Ops | SMED | Quality<br>↳ OPEN (Absorption?) ⚠️<br>↳ 📋 Mitch (Contractor) — Reliability Maintenance<br><mark>Juan Ramirez — Don't know if he is staying</mark></div></div>
-<div class="sec"><div class="sec-h h-proc">⚙️ PROCESSING OPERATIONS ⚠️ Wide Span</div><div class="grid4">${cell(id('R019'),'box box-proc','tag-central')}${cell(id('R020'),'box box-proc','tag-processing')}${cell(id('R021'),'box box-proc','tag-processing')}${cell(id('R022'),'box box-proc','tag-processing')}</div><div class="grid4">${cell(id('R017'),'box box-proc')}${cell(id('R024'),'box box-proc','tag-sanitation')}${cell(id('R025'),'box box-proc','tag-prc')}<div class="box box-proc"></div></div><div class="notes">↳ James David Eaton — Engineering | Quality | Recipe Opt.<br>↳ Emmie Fleck — Engineering | Process | Quality<br>↳ Manahor — Controls | Engineering | Reliability</div></div>
-<div class="sec"><div class="sec-h h-coe">🏭 MANUFACTURING COE</div><div class="grid4">${cell(id('R030'),'box box-coe')}${cell(id('R031'),'box box-coe')}${cell(id('R032'),'box box-coe')}${cell(id('R033'),'box box-coe')}</div><div class="grid3">${cell(id('R035'),'box box-coe')}${cell(id('R018'),'box box-coe')}<div class="box box-coe"><div class="n">↳ ${esc(id('R034').employee_name)}</div><div class="t">${esc(id('R034').title)}</div><div class="f">${esc(focus(id('R034')))}</div><div class="p">${esc(pl(id('R034').performance_label))}</div></div></div></div>
-<div class="summary"><h3>📊 PERFORMANCE SUMMARY</h3><div class="sum-grid"><div class="sum-item">⭐ High Potential<div class="n" style="color:#5aa24c">${counts.high_potential}</div></div><div class="sum-item">📈 Promotable<div class="n" style="color:#2c6ec9">${counts.promotable}</div></div><div class="sum-item">✓ Valued Contributor<div class="n">${counts.valued_contributor}</div></div><div class="sum-item">⚠️ Placement Issue<div class="n" style="color:#c62828">${counts.placement_issue}</div></div><div class="sum-item">Vacancy<div class="n" style="color:#b00020">${counts.vacancy}</div></div></div></div>
-<div class="legend"><h3>🔑 LEGEND & RATING KEY</h3><div class="legend-grid"><div>■ Navy Blue = Executive<br>⭐ High Potential = ready for progression</div><div>■ Green = Packaging<br>📈 Promotable = capable of next level</div><div>■ Gold = Processing<br>✓ Valued Contributor = meets expectations</div><div>■ Purple = COE<br>⚠️ Placement Issue = role misalignment</div><div>■ Light Blue = Support<br>Too New = &lt; 6 months</div></div></div>
-</div>`;}
-function renderChart(){if(state.scenario==='future')renderFutureBoard();else renderCurrentTree();}
-function fitCurrent(){const shell=document.querySelector('.chart-shell'),fit=document.querySelector('.tree-fit'),tree=document.getElementById('orgTree');if(!shell||!fit||!tree)return;tree.style.transform='scale(1)';const scale=Math.min(1,(shell.clientWidth-20)/tree.scrollWidth);tree.style.transform=`scale(${scale})`;fit.style.height=`${Math.ceil(tree.scrollHeight*scale)+10}px`;}
-function syncEditor(){csvEditorEl.value=state.rawCSV;editorMessageEl.textContent='';}
-function applyEdits(){const raw=csvEditorEl.value,p=parseCSV(raw);if(!p.length){editorMessageEl.textContent='CSV parse error.';return;}state.rawCSV=raw;state.rows=p;renderChart();editorMessageEl.textContent='Edits applied in browser.';}
-function downloadCsv(){const b=new Blob([csvEditorEl.value],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='org_data.csv';a.click();URL.revokeObjectURL(u)}
-function bindEvents(){document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{state.scenario=btn.dataset.scenario;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderChart();}));document.getElementById('editToggle').addEventListener('click',()=>{editorPanelEl.classList.toggle('open');if(editorPanelEl.classList.contains('open'))syncEditor();});document.getElementById('applyEditsBtn').addEventListener('click',applyEdits);document.getElementById('downloadCsvBtn').addEventListener('click',downloadCsv);document.getElementById('printBtn').addEventListener('click',()=>window.print());}
-window.addEventListener('resize',()=>{if(state.scenario==='current')fitCurrent();});
-async function loadData(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rawCSV=await r.text();state.rows=parseCSV(state.rawCSV);dataSourceMessageEl.textContent='Loaded live data from org_data.csv.';}catch(e){state.rawCSV=EMBEDDED_CSV;state.rows=parseCSV(state.rawCSV);dataSourceMessageEl.textContent='Using embedded fallback data.';}bindEvents();renderChart();}
+function perf(v){const m={high_potential:'High Potential',promotable:'Promotable',valued_contributor:'Valued Contributor',placement_issue:'Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
+function toCSV(rows){if(!rows.length)return '';const fields=Object.keys(rows[0]);const escCsv=v=>{const s=(v??'').toString();return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};return [fields.join(','),...rows.map(r=>fields.map(f=>escCsv(r[f])).join(','))].join('\n');}
+
+function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[],width:1,x:0,y:0}]));map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
+function measure(node){if(!node.children.length){node.width=1;return 1;}let total=0;node.children.forEach((c,i)=>{total+=measure(c);if(i)total+=0.45});node.width=Math.max(1,total);return node.width;}
+function place(node,left,depth){node.x=left+node.width/2;node.y=depth;let cur=left;node.children.forEach(c=>{place(c,cur,depth+1);cur+=c.width+0.45;});}
+function flatten(node,arr=[]){arr.push(node);node.children.forEach(c=>flatten(c,arr));return arr;}
+function deptMap(rows){const d=[...new Set(rows.map(r=>r.department||'Unassigned'))].sort();const m={};d.forEach((name,i)=>m[name]=DEPT_COLORS[i%DEPT_COLORS.length]);return m;}
+function renderLegend(colorMap){legendEl.innerHTML=Object.entries(colorMap).slice(0,8).map(([d,c])=>`<span><span class="sw" style="background:${c}"></span>${esc(d)}</span>`).join('');}
+
+function renderOrg(){const rows=state.rows.filter(r=>r.scenario===state.scenario);const root=buildTree(rows);if(!root){chartEl.innerHTML='<div>Missing R001 for selected scenario.</div>';return;}measure(root);place(root,0,0);const nodes=flatten(root);const colorMap=deptMap(rows);renderLegend(colorMap);
+const WX=260,WY=170,NW=220,NH=112,P=30;const maxX=Math.max(...nodes.map(n=>n.x)),maxY=Math.max(...nodes.map(n=>n.y));
+const width=Math.ceil(maxX*WX+NW/2+P),height=Math.ceil((maxY+1)*WY+NH+P);let svg='';
+for(const n of nodes){for(const c of n.children){const x1=n.x*WX,y1=n.y*WY+NH,x2=c.x*WX,y2=c.y*WY,mid=(y1+y2)/2;svg+=`<path d="M${x1} ${y1} V${mid} H${x2} V${y2}" fill="none" stroke="var(--line)" stroke-width="2"/>`;}}
+const html=nodes.map(n=>{const left=n.x*WX-NW/2,top=n.y*WY;const f=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');const notes=state.scenario==='future'?[perf(n.performance_label),f,n.notes].filter(Boolean).join(' • '):n.notes;const bg=colorMap[n.department||'Unassigned']||'#fff';const sel=n.role_id===state.selectedRoleId?'selected':'';return `<div class="node ${sel} ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}" style="left:${left}px;top:${top}px;background:${bg};"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes?`<div class="notes">${esc(notes)}</div>`:''}</div>`;}).join('');
+chartEl.innerHTML=`<div class="org-wrap" style="width:${width}px;height:${height}px"><svg class="org-svg" width="${width}" height="${height}">${svg}</svg>${html}</div>`;
+fitToViewport();
+chartEl.querySelectorAll('.node').forEach(el=>el.addEventListener('click',()=>selectRole(el.dataset.roleId)));
+}
+
+function fitToViewport(){const shell=document.querySelector('.chart-shell');const wrap=document.querySelector('.org-wrap');if(!shell||!wrap)return;wrap.style.transform='scale(1)';wrap.style.transformOrigin='top left';const scale=Math.min(1,(shell.clientWidth-16)/wrap.offsetWidth);wrap.style.transform=`scale(${scale})`;shell.style.minHeight=`${Math.ceil(wrap.offsetHeight*scale)+24}px`;}
+
+function getSelectedRow(){return state.rows.find(r=>r.role_id===state.selectedRoleId&&r.scenario===state.scenario);} 
+function selectRole(roleId){state.selectedRoleId=roleId;document.getElementById('editorPanel').classList.add('open');const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>{document.getElementById('f_'+f).value=r[f]||'';});renderOrg();}
+
+function saveEdits(){const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>{r[f]=document.getElementById('f_'+f).value.trim();});state.rawCSV=toCSV(state.rows);renderOrg();}
+function clearSelection(){state.selectedRoleId=null;document.getElementById('editorPanel').classList.remove('open');renderOrg();}
+function downloadCsv(){const csv=toCSV(state.rows);const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='org_data.csv';a.click();URL.revokeObjectURL(url);}
+
+function bindEvents(){document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{state.scenario=btn.dataset.scenario;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');state.selectedRoleId=null;document.getElementById('editorPanel').classList.remove('open');renderOrg();}));
+document.getElementById('saveEditsBtn').addEventListener('click',saveEdits);document.getElementById('clearSelectionBtn').addEventListener('click',clearSelection);document.getElementById('downloadCsvBtn').addEventListener('click',downloadCsv);document.getElementById('printBtn').addEventListener('click',()=>window.print());window.addEventListener('resize',fitToViewport);}
+
+async function loadData(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rawCSV=await r.text();state.rows=parseCSV(state.rawCSV);document.getElementById('dataSourceMessage').textContent='Loaded live data from org_data.csv.';}catch(e){state.rawCSV=EMBEDDED_CSV;state.rows=parseCSV(state.rawCSV);document.getElementById('dataSourceMessage').textContent='Using embedded fallback data.';}bindEvents();renderOrg();}
 loadData();
-</script></body></html>
+</script>
+</body>
+</html>

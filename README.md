@@ -13,11 +13,8 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Highlights vacant roles clearly.
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
-<<<<<<< codex/create-normalized-org-data-csv-3yofb3
+- Both Current and Future are rendered as compact, executive-ready top-down org trees.
 - Future view is a professional, color-coded board layout that mirrors the future-state org chart format you provided.
-=======
-- Future view remains a top-down org tree, now updated to reflect the future-state information you provided.
->>>>>>> main
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -41,17 +38,23 @@ Open:
 
 ## Edit + export workflow
 
-You can now edit data directly in the browser:
+You can now edit directly on the org chart page (no manual CSV editing required):
 
-1. Click **Edit Data**.
-2. Update CSV text.
-3. Click **Apply Edits** to re-render immediately.
-4. Click **Download CSV** to save your updated file.
+1. Click a role box in the chart.
+2. Edit fields in the **Edit selected role** panel.
+3. Click **Save Changes** to update the chart immediately.
+4. Click **Download Updated CSV** to save your updated source file.
 5. Use **Print / Export PDF** for presentation output.
 
 ## Future-state mapping update
 
-<<<<<<< codex/create-normalized-org-data-csv-3yofb3
+The **Proposed Future State** tab is now a clean top-down org tree (same structural style as Current) with:
+
+- Consistent card sizes
+- Even row/column spacing
+- Straight connector paths
+- Subtle department/function pastel color fills
+- A compact fit-to-screen layout for readability and printing
 The **Proposed Future State** tab is rendered as a structured board (not a generic tree) to match your provided format:
 
 - Executive header and direct-report band.
@@ -62,9 +65,6 @@ The **Proposed Future State** tab is rendered as a structured board (not a gener
   - Processing (Mohamed, Maria, Kashima)
   - PRC Reliability (Jerry Nunez)
   - PKG Reliability
-=======
-The **Proposed Future State** tab stays in org-tree form, but the future rows in `org_data.csv` now reflect the future-state details you shared (reporting lines, titles, focus areas, vacancies, and status labels).
->>>>>>> main
 
 ## Publish on GitHub Pages (important)
 
