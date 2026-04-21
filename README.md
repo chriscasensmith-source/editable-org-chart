@@ -13,6 +13,7 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Highlights vacant roles clearly.
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
+- Future view remains a top-down org tree, now updated to reflect the future-state information you provided.
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -44,6 +45,10 @@ You can now edit data directly in the browser:
 4. Click **Download CSV** to save your updated file.
 5. Use **Print / Export PDF** for presentation output.
 
+## Future-state mapping update
+
+The **Proposed Future State** tab stays in org-tree form, but the future rows in `org_data.csv` now reflect the future-state details you shared (reporting lines, titles, focus areas, vacancies, and status labels).
+
 ## Publish on GitHub Pages (important)
 
 Use this checklist so the page works after publishing:
@@ -62,7 +67,7 @@ That means the page still renders, but updates in `org_data.csv` will not appear
 Required columns:
 
 ```text
-role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,future_focus_1,future_focus_2,future_focus_3,notes
+role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
 ```
 
 ### Field rules
@@ -76,6 +81,13 @@ role_id,scenario,employee_name,title,manager_role_id,department,state,role_statu
   - `solid`
   - `strong`
 - Current-state rows can leave `performance_band` blank if you do not want ratings shown.
+- `performance_label` (used in future tree cards):
+  - `high_potential`
+  - `promotable`
+  - `valued_contributor`
+  - `placement_issue`
+  - `too_new`
+  - `vacancy`
 - `future_focus_1` / `future_focus_2` / `future_focus_3`:
   - planning priorities shown in **Proposed Future State** cards
   - can be blank for current-state rows
