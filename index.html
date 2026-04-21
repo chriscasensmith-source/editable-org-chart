@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Editable Org Chart</title>
+<style>
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}
+.container{max-width:1500px;margin:0 auto;padding:14px}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #d5deea;border-radius:10px;padding:10px;position:sticky;top:0;z-index:10}
+.btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer}.btn.active{background:#dbeafe}
+.chart-shell{background:#fff;border:1px solid #d5deea;border-radius:12px;padding:14px;overflow:auto;min-height:600px}
+.tree ul{padding-top:24px;position:relative;display:flex;justify-content:center;margin:0;width:max-content}
+.tree li{list-style:none;text-align:center;position:relative;padding:24px 10px 0;min-width:240px}
+.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid #cbd5e1;width:50%;height:24px}
+.tree li::after{right:auto;left:50%;border-left:2px solid #cbd5e1}
+.tree li:only-child::before,.tree li:only-child::after{display:none}.tree li:first-child::before,.tree li:last-child::after{border:0}.tree li:last-child::before{border-right:2px solid #cbd5e1}.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid #cbd5e1;height:24px}
+.card{background:#fff;border:1px solid #b8c4d9;border-left:6px solid #4b83d6;border-radius:10px;padding:10px;text-align:left;max-width:260px;min-height:100px;cursor:pointer}
+.card:hover{box-shadow:0 1px 6px rgba(15,23,42,.12)}.card.vacant{border-left-color:#f97316;background:#fff7ed}
+.name{font-weight:800;font-size:16px}.title{font-size:14px;color:#334155}.meta{font-size:12px;color:#64748b;margin-top:4px}.notes{font-size:11px;color:#475569;margin-top:6px;border-top:1px dashed #cbd5e1;padding-top:5px}
+.legend{margin-left:auto;font-size:12px;color:#64748b}
+#editorModal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50}
+#editorModal.open{display:flex}
+.modal{background:#fff;width:min(760px,95vw);max-height:90vh;overflow:auto;border-radius:12px;padding:14px}
+.modal h3{margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));gap:10px}
+.grid label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:4px}
+.grid input,.grid select,.grid textarea{border:1px solid #cbd5e1;border-radius:8px;padding:8px;font:inherit;font-size:13px}
+.grid textarea{min-height:68px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.help{margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;color:#1e3a8a}
+@media print{.controls,.help{display:none!important}.chart-shell{border:0;padding:0}@page{size:17in 11in;margin:.25in}}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 style="margin:0 0 8px">Operations Org Chart</h1>
+  <div class="controls">
+    <button class="btn active" data-scenario="current">Current State</button>
+    <button class="btn" data-scenario="future">Proposed Future State</button>
+    <button id="downloadBtn" class="btn">Download Updated CSV</button>
+    <button id="printBtn" class="btn">Print / Export PDF</button>
+    <div class="legend">Click a role card to edit</div>
+  </div>
+
+  <div class="chart-shell"><div id="chart"></div></div>
+  <div class="help">Simple workflow: click card → edit → save. No manual CSV editing needed.</div>
+</div>
+
+<div id="editorModal">
+  <div class="modal">
+    <h3>Edit Role</h3>
+    <div class="grid">
+      <label>Employee Name<input id="f_employee_name"></label>
+      <label>Title<input id="f_title"></label>
+      <label>Manager Role ID<input id="f_manager_role_id"></label>
+      <label>Department<input id="f_department"></label>
+      <label>State<input id="f_state"></label>
+      <label>Role Status<select id="f_role_status"><option>filled</option><option>vacant</option></select></label>
+      <label>Performance Label<input id="f_performance_label"></label>
+      <label>Future Focus 1<input id="f_future_focus_1"></label>
+      <label>Future Focus 2<input id="f_future_focus_2"></label>
+      <label>Future Focus 3<input id="f_future_focus_3"></label>
+      <label style="grid-column:1/-1">Notes<textarea id="f_notes"></textarea></label>
+    </div>
+    <div class="modal-actions">
+      <button id="cancelEdit" class="btn">Cancel</button>
+      <button id="saveEdit" class="btn" style="background:#dbeafe">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const state={scenario:'current',rows:[],selectedRoleId:null};
+const EMBEDDED_CSV=`role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
+R001,current,Nichole Jones,VP Manufacturing North America,,All Operations,current,filled,,,,,,Top operations leader from current org chart
+R001,future,Nichole Jones,VP Manufacturing North America,,Executive,future,filled,,,Strategic Transformation,,,Assumed unchanged (not explicitly listed in future workbook)
+R002,current,Anthony Denina,Director Packaging Operations,R001,Packaging Operations,current,filled,,,,,,
+R002,future,Anthony Denina,Director Packaging Operations,R001,Packaging Operations,future,filled,,,Safety,Quality,Delivery,Future workbook suggests broader safety focus; kept core title for continuity
+R003,current,Kim Hicks,Director Processing Operations,R001,Processing Operations,current,filled,,,,,,
+R003,future,KIM HICKS,Director - Packaging Operations,R001,Packaging Operations,future,filled,solid,valued_contributor,Packaging,Quality,SMED,Future workbook includes Kim in director-level data; reporting line assumed unchanged
+R004,current,Amy Ruiz,Manager Manufacturing COE,R001,Manufacturing COE,current,filled,,,,,,
+R004,future,AMY RUIZ,Manager - Manufacturing COE,R001,Manufacturing COE,future,filled,strong,high_potential,Transformation,Engineering,Communications,Future workbook spells out transformation/engineering focus
+R005,current,Edward Ballo,Contractor - Executive Support,R001,Executive Support,current,filled,,,,,,Contractor role
+R005,future,Edward Ballo,Contractor,R001,Executive Support,future,filled,,,,,,Assumed retained
+R006,current,Mitch,Contractor - Reliability Maintenance,R005,Reliability,current,filled,,,,,,Contractor role
+R006,future,Mitch,Contractor - Reliability Maintenance,R011,Packaging Operations,future,filled,,contractor,,,,Assumed retained
+R007,current,Haley Buckley,Manager Production Operations,R002,Packaging Operations,current,filled,,,,,,
+R007,future,Haley Buckley,Mgr Production Ops,R003,Packaging Operations,future,filled,strong,promotable,Cell 2,Quality,Safety,Future workbook indicates expanded scope (Cell 1/2/3)
+R008,current,Bernard Filic,Manager Packaging Operations,R002,Packaging Operations,current,filled,,,,,,
+R008,future,Bernard Filic,Mgr Packaging Ops,R003,Packaging Operations,future,filled,solid,valued_contributor,Cell 1 & 3,Quality,Safety,Future workbook indicates broader warehouse/processing/packaging scope
+R009,current,Kimberly Nunez,Manager Warehouse,R002,Warehouse,current,filled,,,,,,
+R009,future,KIMBERLY NUNEZ,R3 EHS Manager,R001,Support,future,filled,solid,valued_contributor,Warehouse,Takt,Safety,
+R010,current,Joe Primm,Team Lead IV - Reliability,R002,Reliability,current,filled,,,,,,
+R010,future,Joe Primm,Team Lead IV - Reliability,R008,Reliability,future,filled,solid,valued_contributor,Ops,Safety,Quality,Future workbook categorizes as reliability team lead
+R011,current,Jade Castle,Shift Lead,R007,Packaging Operations,current,filled,,,,,,1st shift
+R011,future,Jade Castle,Mgr Warehouse,R003,Packaging Operations,future,filled,,too_new,Ops,Safety,Quality,Future workbook keeps TL scope
+R012,current,Ron Peterson,Shift Lead,R007,Packaging Operations,current,filled,,,,,,2nd shift
+R012,future,Ron Petersen,Shift Lead,R007,Packaging Operations,future,filled,,,Operations,Procedures,Quality,Last name spelled Petersen in future workbook
+R013,current,Dat,Contractor Engineer,R007,Engineering,current,filled,,,,,,Contractor role
+R013,future,Dat,Contractor Engineer,R007,Engineering,future,filled,,,,,,Assumed retained
+R014,current,Juan Ramirez,Shift Lead,R008,Packaging Operations,current,filled,,,,,,Mon-Wed day
+R014,future,Juan Rimirez,Shift Lead,R011,Packaging Operations,future,filled,,,Operations,Safety,Quality,Don't know if he is staying
+R015,current,Shane Bishop,Shift Lead,R008,Packaging Operations,current,filled,,,,,,Mon-Wed night
+R015,future,Shane Bishop,Shift Lead,R008,Packaging Operations,future,filled,solid,valued_contributor,Ops,Safety,SMED,
+R016,current,,Shift Lead,R008,Packaging Operations,current,vacant,,,,,,Thu-Sat day open role from current org chart
+R016,future,,PKG Reliability Team Lead,R003,Packaging Operations,future,vacant,,vacancy,,,,No confirmed assignee in future workbook
+R017,current,Tim Riggle,Shift Lead,R008,Packaging Operations,current,filled,,,,,,Thu-Sat night
+R017,future,Open,Team Lead II,R026,Packaging Operations,future,vacant,,vacancy,Thu-Sat Night,,,
+R018,current,Michael Orrson,Team Lead II,R009,Warehouse,current,filled,,,,,,
+R018,future,Michael Orrson,Business Analyst,R004,Warehouse,future,filled,solid,valued_contributor,Op Ex,CI,SMED,
+R019,current,Veronica Zapata,Team Lead III - Central Weigh,R003,Processing Operations,current,filled,,,,,,
+R019,future,Veronica Zapata,Team Lead III - Central Weigh,R026,Processing Operations,future,filled,solid,valued_contributor,Central Weigh,Safety,Quality,
+R020,current,Mohamed Kambal,Team Lead II,R003,Processing Operations,current,filled,,,,,,Mon-Wed day
+R020,future,Mohamed Kambal,Team Lead II,R026,Processing Operations,future,filled,strong,promotable,Operations,Quality,Safety,
+R021,current,Maria Anevel Bergreen,Team Lead II,R003,Processing Operations,current,filled,,,,,,Mon-Wed night
+R021,future,Maria Bergreen,Team Lead II,R026,Processing Operations,future,filled,needs_support,placement_issue,Operations,Quality,Safety,Future workbook omits middle name
+R022,current,Kashima Pollard,Team Lead II,R003,Processing Operations,current,filled,,,,,,Thu-Sat day
+R022,future,Kashima Pollard,Team Lead II,R026,Processing Operations,future,filled,solid,valued_contributor,Operations,Quality,Procedures,
+R023,current,BJ Jagatheesan,Team Lead II,R003,Processing Operations,current,filled,,,,,,Thu-Sat night
+R023,future,BJ Jagatheesan,Team Lead II,R008,Processing Operations,future,filled,solid,valued_contributor,Ops,SMED,Quality,
+R024,current,Adam Escalante,Team Lead I - Sanitation,R003,Processing Operations,current,filled,,,,,,
+R024,future,Adam Escalante,Team Lead I,R026,Processing Operations,future,filled,solid,valued_contributor,Sanitation,Quality,Takt,
+R025,current,Jerry Nunez,Team Lead III - Reliability/PUR,R003,Processing Operations,current,filled,,,,,,
+R025,future,Jerry Nunez,Team Lead III,R026,Processing Operations,future,filled,solid,valued_contributor,Reliability,CMMS,Operations,
+R026,current,Erica Bush,Manager Process Engineering,R003,Process Engineering,current,filled,,,,,,
+R026,future,ERICA BUSH,Manager - Processing Operations,R001,Processing Operations,future,filled,strong,high_potential,Safety,Quality,Delivery,Future workbook lists engineering leader in high-potential category
+R027,current,James David Eaton,Cleaning Engineer,R026,Process Engineering,current,filled,,,,,,
+R027,future,James-David Eaton,Cleaning Engineer,R026,Process Engineering,future,filled,solid,valued_contributor,Engineering,Quality,Recipe Opt.,Hyphenated first name in future workbook
+R028,current,Emmie Fleck,Engineer,R026,Process Engineering,current,filled,,,,,,
+R028,future,Emmie Fleck,Engineer,R026,Process Engineering,future,filled,solid,valued_contributor,Engineering,Process,Quality,Assumed retained (not listed explicitly)
+R029,current,Manahor,Principal Controls Engineer,R026,Process Engineering,current,filled,,,,,,
+R029,future,Manahor,Principal Controls Engineer,R026,Process Engineering,future,filled,solid,valued_contributor,Controls,Engineering,Reliability,Assumed retained (not listed explicitly)
+R030,current,Chloe Neumeyer,Engineer Operations,R004,Manufacturing COE,current,filled,,,,,,
+R030,future,Chloe Neumeyer,Engineer Operations,R004,Manufacturing COE,future,filled,solid,valued_contributor,Engineering,Change Mgmt,Quality,
+R031,current,Kenia Cruz,Engineer Operations,R004,Manufacturing COE,current,filled,,,,,,
+R031,future,Kenia Cruz,Engineer Operations,R004,Manufacturing COE,future,filled,solid,valued_contributor,SMED,Value Streams,Validation,
+R032,current,Chris Stevens,Engineer Operations,R004,Manufacturing COE,current,filled,,,,,,
+R032,future,Christopher Stevens,Engineer Operations,R004,Manufacturing COE,future,filled,solid,valued_contributor,Value Streams,CI,Quality,Future workbook uses full first name Christopher
+R033,current,Dominic Johnson,Sr Engineer Operations,R004,Manufacturing COE,current,filled,,,,,,
+R033,future,Dominic Johnson,Sr Engineer Operations,R004,Manufacturing COE,future,filled,solid,valued_contributor,Reliability,CI,Quality,
+R034,current,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,current,filled,,,,,,
+R034,future,Scott Fitzsimmons,Specialist PM/Work Orders,R004,Manufacturing COE,future,filled,solid,valued_contributor,PM,Work Orders,Reliability,Assumed retained (not listed explicitly)
+R035,current,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,current,filled,,,,,,
+R035,future,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,future,filled,strong,promotable,Training,Culture,Communications,Future workbook suggests increased communications/culture emphasis`;
+const chartEl=document.getElementById('chart');
+const modal=document.getElementById('editorModal');
+
+function parseCSV(t){const rows=[];let c='',q=false,r=[];for(let i=0;i<t.length;i++){const ch=t[i],n=t[i+1];if(ch==='"'){if(q&&n==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c);c='';}else if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&n==='\n')i++;r.push(c);c='';if(r.some(x=>x!==''))rows.push(r);r=[];}else c+=ch;}if(c!==''||r.length){r.push(c);rows.push(r);}const h=rows[0].map(x=>x.trim());return rows.slice(1).map(v=>{const o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o;});}
+function toCSV(rows){if(!rows.length)return '';const fields=Object.keys(rows[0]);const esc=v=>{const s=(v??'').toString();return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};return [fields.join(','),...rows.map(r=>fields.map(f=>esc(r[f])).join(','))].join('\n');}
+function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
+function renderNode(n){const f=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');const notes=state.scenario==='future'?[n.performance_label,f,n.notes].filter(Boolean).join(' • '):n.notes;return `<li><div class="card ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes?`<div class="notes">${esc(notes)}</div>`:''}</div>${n.children.length?`<ul>${n.children.map(renderNode).join('')}</ul>`:''}</li>`;}
+function render(){const rows=state.rows.filter(r=>r.scenario===state.scenario);const root=buildTree(rows);if(!root){chartEl.innerHTML='<p>Missing root role (R001).</p>';return;}chartEl.innerHTML=`<div class="tree"><ul>${renderNode(root)}</ul></div>`;chartEl.querySelectorAll('.card').forEach(c=>c.addEventListener('click',()=>openEditor(c.dataset.roleId)));}
+
+function openEditor(roleId){state.selectedRoleId=roleId;const r=state.rows.find(x=>x.role_id===roleId&&x.scenario===state.scenario);if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>document.getElementById('f_'+f).value=r[f]||'');modal.classList.add('open');}
+function saveEditor(){const r=state.rows.find(x=>x.role_id===state.selectedRoleId&&x.scenario===state.scenario);if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>r[f]=document.getElementById('f_'+f).value.trim());modal.classList.remove('open');render();}
+
+function bind(){document.querySelectorAll('[data-scenario]').forEach(b=>b.addEventListener('click',()=>{state.scenario=b.dataset.scenario;document.querySelectorAll('[data-scenario]').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();}));document.getElementById('downloadBtn').addEventListener('click',()=>{const csv=toCSV(state.rows);const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='org_data.csv';a.click();URL.revokeObjectURL(url);});document.getElementById('printBtn').addEventListener('click',()=>window.print());document.getElementById('cancelEdit').addEventListener('click',()=>modal.classList.remove('open'));document.getElementById('saveEdit').addEventListener('click',saveEditor);}
+
+async function load(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rows=parseCSV(await r.text());}catch(e){state.rows=parseCSV(EMBEDDED_CSV);}bind();render();}
+load();
+</script>
+</body>
+</html>
