@@ -37,12 +37,12 @@ Open:
 
 ## Edit + export workflow
 
-You can now edit data directly in the browser:
+You can now edit directly on the org chart page (no manual CSV editing required):
 
-1. Click **Edit Data**.
-2. Update CSV text.
-3. Click **Apply Edits** to re-render immediately.
-4. Click **Download CSV** to save your updated file.
+1. Click a role box in the chart.
+2. Edit fields in the **Edit selected role** panel.
+3. Click **Save Changes** to update the chart immediately.
+4. Click **Download Updated CSV** to save your updated source file.
 5. Use **Print / Export PDF** for presentation output.
 
 ## Future-state mapping update
