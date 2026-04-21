@@ -105,4 +105,5 @@ No manual box drawing is needed—the chart is rendered from the CSV.
 
 ## Printing / export
 
-Use browser print (`Ctrl/Cmd + P`) and save as PDF. The page includes print styles for presentation output.
+Use browser print (`Ctrl/Cmd + P`) and save as PDF.  
+The tree now auto-scales to fit viewport width and applies print scaling for 11x17 landscape export to reduce card cut-off.

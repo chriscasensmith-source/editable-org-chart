@@ -14,7 +14,8 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fb;color:#1
 .editor{display:none;margin:10px 0;background:#fff;border:1px solid #cbd5e1;border-radius:10px;padding:10px}
 .editor.open{display:block}.editor textarea{width:100%;min-height:170px;font-family:monospace}
 .chart-shell{background:#fff;border:1px solid #cbd5e1;border-radius:12px;overflow:auto;height:calc(100vh - 240px);min-height:520px;padding:10px}
-.tree{width:max-content;min-width:100%;display:flex;justify-content:center;padding:10px}
+.tree-fit{width:100%;position:relative}
+.tree{width:max-content;display:flex;justify-content:center;padding:10px;transform-origin:top left}
 .tree ul{padding-top:24px;position:relative;display:flex;justify-content:center;margin:0;width:max-content}
 .tree li{list-style:none;text-align:center;position:relative;padding:24px 10px 0;min-width:230px}
 .tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid #cbd5e1;width:50%;height:24px}
@@ -28,7 +29,12 @@ body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6fb;color:#1
 .badge{display:inline-block;margin-top:6px;padding:2px 7px;border-radius:999px;font-size:.78rem;font-weight:700;background:#eef2ff;color:#1e3a8a}
 .focus{font-size:.8rem;margin-top:6px;border-top:1px dashed #cbd5e1;padding-top:5px}
 .help{margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;color:#1e3a8a}
-@media print{.controls,.editor,.help,#dataSourceMessage{display:none!important}.chart-shell{height:auto;border:0;overflow:visible}}
+@media print{
+  .controls,.editor,.help,#dataSourceMessage{display:none!important}
+  .chart-shell{height:auto;border:0;overflow:visible;padding:0}
+  .tree{transform:scale(var(--print-scale,1))}
+  @page{size:17in 11in;margin:.25in}
+}
 </style>
 </head>
 <body>
@@ -130,13 +136,33 @@ function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'
 function perfLabel(v){const m={high_potential:'⭐ High Potential',promotable:'📈 Promotable',valued_contributor:'✓ Valued Contributor',placement_issue:'⚠️ Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
 function renderTree(){const rows=state.rows.filter(r=>r.scenario===state.scenario);const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root){chartEl.innerHTML='<div>Missing R001 in selected scenario.</div>';return;}const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));
 const node=n=>{const focuses=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');const badge=state.scenario==='future'&&n.performance_label?`<div class="badge">${esc(perfLabel(n.performance_label)||n.performance_label)}</div>`:'';const focus=state.scenario==='future'&&focuses?`<div class="focus"><b>Future focus:</b> ${esc(focuses)}</div>`:'';return `<li><div class="card ${n.role_status==='vacant'?'vacant':''} ${n.role_id==='R001'?'root':''}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${badge}${focus}</div>${n.children.length?`<ul>${n.children.map(node).join('')}</ul>`:''}</li>`;};
-chartEl.innerHTML=`<div class="tree"><ul>${node(root)}</ul></div>`;
+chartEl.innerHTML=`<div class="tree-fit"><div class="tree" id="orgTree"><ul>${node(root)}</ul></div></div>`;
+fitTreeToViewport();
 }
 function renderChart(){renderTree();}
+function fitTreeToViewport(){
+  const shell=document.querySelector('.chart-shell');
+  const fit=document.querySelector('.tree-fit');
+  const tree=document.getElementById('orgTree');
+  if(!shell||!fit||!tree) return;
+  tree.style.transform='scale(1)';
+  const scale=Math.min(1,(shell.clientWidth-20)/tree.scrollWidth);
+  tree.style.transform=`scale(${scale})`;
+  fit.style.height=`${Math.ceil(tree.scrollHeight*scale)+10}px`;
+}
 function syncEditor(){csvEditorEl.value=state.rawCSV;editorMessageEl.textContent='';}
 function applyEdits(){const raw=csvEditorEl.value,p=parseCSV(raw);if(!p.length){editorMessageEl.textContent='CSV parse error.';return;}state.rawCSV=raw;state.rows=p;renderChart();editorMessageEl.textContent='Edits applied in browser.';}
 function downloadCsv(){const b=new Blob([csvEditorEl.value],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='org_data.csv';a.click();URL.revokeObjectURL(u)}
 function bindEvents(){document.querySelectorAll('.tab-btn').forEach(btn=>btn.addEventListener('click',()=>{state.scenario=btn.dataset.scenario;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderChart();}));document.getElementById('editToggle').addEventListener('click',()=>{editorPanelEl.classList.toggle('open');if(editorPanelEl.classList.contains('open'))syncEditor();});document.getElementById('applyEditsBtn').addEventListener('click',applyEdits);document.getElementById('downloadCsvBtn').addEventListener('click',downloadCsv);document.getElementById('printBtn').addEventListener('click',()=>window.print());}
+window.addEventListener('resize',()=>fitTreeToViewport());
+window.addEventListener('beforeprint',()=>{
+  const tree=document.getElementById('orgTree');
+  if(!tree) return;
+  tree.style.transform='scale(1)';
+  const printWidth=1600;
+  const scale=Math.min(1,printWidth/tree.scrollWidth);
+  document.documentElement.style.setProperty('--print-scale',scale.toString());
+});
 async function loadData(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rawCSV=await r.text();state.rows=parseCSV(state.rawCSV);dataSourceMessageEl.textContent='Loaded live data from org_data.csv.';}catch(e){state.rawCSV=EMBEDDED_CSV;state.rows=parseCSV(state.rawCSV);dataSourceMessageEl.textContent='Using embedded fallback data.';}bindEvents();renderChart();}
 loadData();
 </script>
