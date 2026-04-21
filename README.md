@@ -13,7 +13,11 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Highlights vacant roles clearly.
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
+<<<<<<< codex/create-normalized-org-data-csv-3yofb3
 - Future view is a professional, color-coded board layout that mirrors the future-state org chart format you provided.
+=======
+- Future view remains a top-down org tree, now updated to reflect the future-state information you provided.
+>>>>>>> main
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -47,6 +51,7 @@ You can now edit data directly in the browser:
 
 ## Future-state mapping update
 
+<<<<<<< codex/create-normalized-org-data-csv-3yofb3
 The **Proposed Future State** tab is rendered as a structured board (not a generic tree) to match your provided format:
 
 - Executive header and direct-report band.
@@ -57,6 +62,9 @@ The **Proposed Future State** tab is rendered as a structured board (not a gener
   - Processing (Mohamed, Maria, Kashima)
   - PRC Reliability (Jerry Nunez)
   - PKG Reliability
+=======
+The **Proposed Future State** tab stays in org-tree form, but the future rows in `org_data.csv` now reflect the future-state details you shared (reporting lines, titles, focus areas, vacancies, and status labels).
+>>>>>>> main
 
 ## Publish on GitHub Pages (important)
 
