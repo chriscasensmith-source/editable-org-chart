@@ -10,7 +10,7 @@ R004,future,AMY RUIZ,Manager - Manufacturing COE,R001,Manufacturing COE,future,f
 R005,current,Edward Ballo,Contractor - Executive Support,R001,Executive Support,current,filled,,,,,,Contractor role
 R005,future,Edward Ballo,Contractor,R001,Executive Support,future,filled,,,,,,Assumed retained
 R006,current,Mitch,Contractor - Reliability Maintenance,R005,Reliability,current,filled,,,,,,Contractor role
-R006,future,Mitch,Contractor - Reliability Maintenance,R011,Packaging Operations,future,filled,,contractor,,,,Assumed retained
+R006,future,Mitch,Contractor - Reliability Maintenance,R005,Executive Support,future,filled,,contractor,,,,Moved under Edward Ballo for future state
 R007,current,Haley Buckley,Manager Production Operations,R002,Packaging Operations,current,filled,,,,,,
 R007,future,Haley Buckley,Mgr Production Ops,R003,Packaging Operations,future,filled,strong,promotable,Cell 2,Quality,Safety,Future workbook indicates expanded scope (Cell 1/2/3)
 R008,current,Bernard Filic,Manager Packaging Operations,R002,Packaging Operations,current,filled,,,,,,

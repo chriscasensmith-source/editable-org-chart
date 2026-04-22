@@ -13,7 +13,7 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Highlights vacant roles clearly.
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
-- Current State is rendered as a tree; Proposed Future State is rendered as a structured executive board based on the provided screenshots.
+- Current State and Proposed Future State are both rendered as top-down trees from the same source data model.
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -48,14 +48,12 @@ You can now edit directly on the org chart page (no manual CSV editing required)
 
 ## Future-state mapping update
 
-The **Proposed Future State** tab is aligned to the screenshot structure with:
+The **Proposed Future State** tab uses the same tree style as Current State, while applying future-state hierarchy/data changes:
 
-- Executive and direct-report level bars
-- Packaging, Processing (with Wide Span), and Manufacturing COE sections
-- Shared Bernard + Haley branch handling for team leads
-- Mitch shown under Edward
-- Juan shown as side-note exception card
-- Processing engineer note list shown off to the side
+- Shared-branch annotation shown on the four team-lead roles under Bernard/Haley scope
+- Mitch moved under Edward Ballo in future-state data
+- Juan kept as a side-note card, off the formal tree
+- Future focus/performance fields shown on future cards for easier planning edits
 
 ## Publish on GitHub Pages (important)
 

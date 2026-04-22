@@ -40,6 +40,9 @@ h1{margin:0 0 8px}
 .card:hover{box-shadow:0 4px 10px rgba(15,23,42,.12)}
 .card.vacant{border-left-color:#f97316;background:#fff7ed}
 .card .name{font-size:17px;font-weight:800;line-height:1.2}.card .title{font-size:14px;font-weight:600;color:#334155;margin-top:2px}.card .meta{font-size:12px;color:#64748b;margin-top:5px}.card .notes{font-size:11px;color:#475569;margin-top:7px;border-top:1px dashed rgba(71,85,105,.3);padding-top:6px;line-height:1.3}
+.future-extra{font-size:11px;color:#1e3a8a;margin-top:6px;border-top:1px dotted #93c5fd;padding-top:5px}
+.future-tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:999px;background:#e0e7ff;color:#3730a3;font-weight:700;margin-top:5px}
+.future-side-note{display:inline-block;margin-top:12px;background:var(--c-side-note);border:1px solid #8a7f00;padding:8px 10px;font-size:13px;border-radius:6px}
 
 /* future board */
 .future-wrap{display:flex;justify-content:center;padding:8px 0}
@@ -142,7 +145,7 @@ R004,future,AMY RUIZ,Manager - Manufacturing COE,R001,Manufacturing COE,future,f
 R005,current,Edward Ballo,Contractor - Executive Support,R001,Executive Support,current,filled,,,,,,Contractor role
 R005,future,Edward Ballo,Contractor,R001,Executive Support,future,filled,,,,,,Assumed retained
 R006,current,Mitch,Contractor - Reliability Maintenance,R005,Reliability,current,filled,,,,,,Contractor role
-R006,future,Mitch,Contractor - Reliability Maintenance,R011,Packaging Operations,future,filled,,contractor,,,,Assumed retained
+R006,future,Mitch,Contractor - Reliability Maintenance,R005,Executive Support,future,filled,,contractor,,,,Moved under Edward Ballo for future state
 R007,current,Haley Buckley,Manager Production Operations,R002,Packaging Operations,current,filled,,,,,,
 R007,future,Haley Buckley,Mgr Production Ops,R003,Packaging Operations,future,filled,strong,promotable,Cell 2,Quality,Safety,Future workbook indicates expanded scope (Cell 1/2/3)
 R008,current,Bernard Filic,Manager Packaging Operations,R002,Packaging Operations,current,filled,,,,,,
@@ -210,63 +213,30 @@ function focus(r){return [r.future_focus_1,r.future_focus_2,r.future_focus_3].fi
 
 // ---- Current state tree renderer ----
 function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
-function nodeHtml(n){const notes=n.notes?`<div class="notes">${esc(n.notes)}</div>`:'';return `<li><div class="card ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes}</div>${n.children.length?`<ul>${n.children.map(nodeHtml).join('')}</ul>`:''}</li>`;}
-function renderCurrent(target,forPrint=false){const rows=state.rows.filter(r=>r.scenario==='current');const root=buildTree(rows);if(!root){target.innerHTML='<p>Missing root role (R001).</p>';return;}target.innerHTML=`<div class="tree"><ul>${nodeHtml(root)}</ul></div>`;if(!forPrint)bindCardClicks(target);}
+function nodeHtml(n,scenario='current'){
+  const notes=n.notes?`<div class="notes">${esc(n.notes)}</div>`:'';
+  const sharedLead=scenario==='future'&&['R010','R012','R015','R023'].includes(n.role_id)?`<div class="future-extra">Shared branch: Bernard Filic + Haley Buckley</div>`:'';
+  const futureBits=scenario==='future'?`<div class="future-extra">${esc(focus(n)||'')}</div><div class="future-tag">${esc(perf(n.performance_label)||n.performance_band||'')}</div>${sharedLead}`:'';
+  return `<li><div class="card ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${futureBits}${notes}</div>${n.children.length?`<ul>${n.children.map(c=>nodeHtml(c,scenario)).join('')}</ul>`:''}</li>`;
+}
+function renderScenarioTree(target,scenario,forPrint=false){
+  const rows=state.rows.filter(r=>r.scenario===scenario);
+  const treeRows=scenario==='future'?rows.filter(r=>r.role_id!=='R014'):rows;
+  const root=buildTree(treeRows);
+  if(!root){target.innerHTML='<p>Missing root role (R001).</p>';return;}
+  const juan=scenario==='future'?rows.find(r=>r.role_id==='R014'):null;
+  const juanNote=juan?`<div class="future-side-note" data-role-id="R014">Juan (side note): ${esc(juan.employee_name||'Open')} — ${esc(juan.notes||'No note')}</div>`:'';
+  target.innerHTML=`<div class="tree"><ul>${nodeHtml(root,scenario)}</ul>${juanNote}</div>`;
+  if(!forPrint)bindCardClicks(target);
+}
+function renderCurrent(target,forPrint=false){renderScenarioTree(target,'current',forPrint);}
 
 // ---- Future state structured renderer (screenshot source of truth) ----
 function byId(id){return state.rows.find(r=>r.scenario==='future'&&r.role_id===id);} 
 function roleCard(r,cls='fcard',extra=''){if(!r)return `<div class="${cls}"></div>`;return `<div class="${cls}" data-role-id="${r.role_id}"><div class="name">${esc(r.employee_name||'Open')}</div><div class="title">${esc(r.title)}</div><div class="focus">${esc(focus(r))}</div><div class="status">${esc(perf(r.performance_label))}</div>${extra}</div>`;}
 function directCard(id,cls,icon=''){const r=byId(id);if(!r)return `<div class="dr ${cls}"></div>`;return `<div class="dr ${cls}" data-role-id="${id}"><div class="name">${icon} ${esc(r.employee_name||'Open')}</div><div class="title">${esc(r.title)}</div><div class="meta">${esc(perf(r.performance_label))}</div></div>`;}
 function renderFuture(target,forPrint=false){
-  // hierarchy decisions based on screenshot + user rules:
-  // - Edward, Kim, Erica, Amy, Kimberly under Nichole
-  // - Bernard/Haley shared team-lead branch
-  // - Mitch under Edward
-  // - Juan as side annotation (not in formal tree)
-  const counts={high_potential:0,promotable:0,valued_contributor:0,placement_issue:0,vacancy:0};
-  state.rows.filter(r=>r.scenario==='future').forEach(r=>{if(r.role_status==='vacant')counts.vacancy++;if(counts[r.performance_label]!=null)counts[r.performance_label]++;});
-
-  target.innerHTML=`<div class="future-wrap"><div class="future-board">
-    <div class="fb-title">FUTURE STATE ORG CHART</div>
-    <div class="fb-sub">Supply Chain  •  Future Focus Areas  •  Based on CURRENT Perceived Performance</div>
-    <div class="level" style="background:var(--c-exec-blue)">▼ LEVEL 1: EXECUTIVE</div>
-    <div class="exec-card" data-role-id="R001"><div class="name">NICHOLE JONES</div><div>VP Manufacturing North America</div><div>Strategic Transformation</div></div>
-    <div class="level">▼ LEVEL 2: DIRECT REPORTS TO VP</div>
-    <div class="row5">${directCard('R005','support','📋')}${directCard('R003','pack','⚙️')}${directCard('R026','proc','⚙️')}${directCard('R004','coe','🏭')}${directCard('R009','support','🛡️')}</div>
-
-    <div class="section pack">
-      <div class="head">📦 PACKAGING OPERATIONS</div>
-      <div class="grid4">${roleCard(byId('R008'))}${roleCard(byId('R007'))}${roleCard(byId('R011'))}${roleCard(byId('R016'))}</div>
-      <div class="shared-branch">
-        <div class="label">Shared branch under Bernard Filic + Haley Buckley</div>
-        <div class="items">
-          <div class="shared-item" data-role-id="R010">${esc(byId('R010')?.employee_name||'Open')}<br>${esc(focus(byId('R010')||{}))}</div>
-          <div class="shared-item" data-role-id="R015">${esc(byId('R015')?.employee_name||'Open')}<br>${esc(focus(byId('R015')||{}))}</div>
-          <div class="shared-item" data-role-id="R023">${esc(byId('R023')?.employee_name||'Open')}<br>${esc(focus(byId('R023')||{}))}</div>
-          <div class="shared-item" data-role-id="R012">${esc(byId('R012')?.employee_name||'Open')}<br>${esc(focus(byId('R012')||{}))}</div>
-        </div>
-      </div>
-      <div class="engineer-notes" data-role-id="R006">↳ Mitch reports to Edward Ballo: ${esc(byId('R006')?.title||'')}</div>
-      <div class="side-note" data-role-id="R014">Juan Ramirez — Don't know if he is staying</div>
-    </div>
-
-    <div class="section proc">
-      <div class="head">⚙️ PROCESSING OPERATIONS   ⚠️ Wide Span</div>
-      <div class="grid4">${roleCard(byId('R019'),'fcard')}${roleCard(byId('R020'),'fcard')}${roleCard(byId('R021'),'fcard')}${roleCard(byId('R022'),'fcard')}</div>
-      <div class="grid4">${roleCard(byId('R017'),'fcard')}${roleCard(byId('R024'),'fcard')}${roleCard(byId('R025'),'fcard')}<div class="fcard"></div></div>
-      <div class="engineer-notes">↳ ${esc(byId('R027')?.employee_name||'')} — ${esc(focus(byId('R027')||{}))}<br>↳ ${esc(byId('R028')?.employee_name||'')} — ${esc(focus(byId('R028')||{}))}<br>↳ ${esc(byId('R029')?.employee_name||'')} — ${esc(focus(byId('R029')||{}))}</div>
-    </div>
-
-    <div class="section coe">
-      <div class="head">🏭 MANUFACTURING COE</div>
-      <div class="grid4">${roleCard(byId('R030'),'fcard')}${roleCard(byId('R031'),'fcard')}${roleCard(byId('R032'),'fcard')}${roleCard(byId('R033'),'fcard')}</div>
-      <div class="grid3">${roleCard(byId('R035'),'fcard')}${roleCard(byId('R018'),'fcard')}<div class="fcard" data-role-id="R034"><div class="name">↳ ${esc(byId('R034')?.employee_name||'')}</div><div class="title">${esc(byId('R034')?.title||'')}</div><div class="focus">${esc(focus(byId('R034')||{}))}</div><div class="status">${esc(perf(byId('R034')?.performance_label))}</div></div></div>
-    </div>
-
-    <div class="summary"><h3>📊 PERFORMANCE SUMMARY</h3><div class="summary-grid"><div>⭐ High Potential<div class="n">${counts.high_potential}</div></div><div>📈 Promotable<div class="n">${counts.promotable}</div></div><div>✓ Valued Contributor<div class="n">${counts.valued_contributor}</div></div><div>⚠️ Placement Issue<div class="n">${counts.placement_issue}</div></div><div>Vacancy<div class="n">${counts.vacancy}</div></div></div></div>
-    <div class="legend-block"><h3>🔑 LEGEND & RATING KEY</h3><div class="legend-grid"><div>Executive blue</div><div>Packaging green</div><div>Processing gold</div><div>COE purple</div><div>Support blue-gray</div></div></div>
-  </div></div>`;
-  if(!forPrint)bindCardClicks(target);
+  renderScenarioTree(target,'future',forPrint);
 }
 
 function bindCardClicks(root){root.querySelectorAll('[data-role-id]').forEach(el=>el.addEventListener('click',(e)=>{e.stopPropagation();openEditor(el.getAttribute('data-role-id'));}));}
