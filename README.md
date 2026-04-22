@@ -1,119 +1,139 @@
-# Editable Org Chart Tool
+# Editable Org Chart (GitHub Pages Ready)
 
-A lightweight, business-friendly org chart app powered by a single CSV source file.
+A modern, business-friendly org chart editor and printer built for **Current State** and **Future State** planning.
 
-## What this tool does
+This project treats the Excel workbook as a **one-time starting source**, then manages data in the app as structured JSON.
 
-- Builds a **true top-down org chart tree** from `org_data.csv`.
-- Uses **Nichole Jones (`R001`)** as the single root node.
-- Supports two views:
-  - **Current State**
-  - **Proposed Future State**
-- Shows reporting lines from `manager_role_id`.
-- Highlights vacant roles clearly.
-- Uses neutral `performance_band` statuses with color coding.
-- Shows extra future-planning focus fields in Future view.
-- Current State and Proposed Future State are both rendered as top-down trees from the same source data model.
-- Includes print-friendly layout for PDF export.
-- Includes an in-browser CSV editor with apply + download actions.
+## What this app does
 
-## Project files
+- Shows a real top-down org chart (not a spreadsheet view).
+- Supports **Current** and **Future** scenarios.
+- Lets non-technical users edit org boxes directly in the browser.
+- Lets users add, duplicate, delete, hide, and recolor roles.
+- Supports notes, extra detail lines, and status badges.
+- Exports and imports JSON so changes can be saved outside GitHub.
+- Includes an in-browser Excel import button for one-time reseeding when needed.
+- Exports CSV for spreadsheet sharing.
+- Prints cleanly on **11 x 17 landscape** with presentation and detailed modes.
 
-- `index.html` — single-page app (plain HTML/CSS/JavaScript).
-- `org_data.csv` — editable source of truth.
-- `current_org_chart.xlsx` / `future_org_chart.xlsx` — reference inputs only.
+## One-time Excel import approach
+
+The workbook is used once to create normalized app data.
+
+- Future source workbook: `future_org_chart.xlsx` (equivalent to uploaded future workbook input).
+- Import script: `scripts/importFromExcel.mjs`.
+- Normalized data output: `src/data/orgChartData.json`.
+
+After import, the app renders from JSON data instead of spreadsheet coordinates.
+
+## Project structure
+
+- `src/components/` – chart, editor panel, toolbar UI.
+- `src/data/` – normalized org chart data JSON.
+- `src/utils/` – chart helpers, exports, optional runtime Excel parser.
+- `src/styles/` – modern UI + print stylesheet.
+- `scripts/` – one-time Excel import script.
+- `public/` – static assets.
 
 ## Run locally
 
-Because browsers block CSV loading in many `file://` cases, run a tiny local server:
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Start dev server:
+   ```bash
+   npm run dev
+   ```
+3. Open the local URL shown in your terminal.
+
+## Build for production
 
 ```bash
-python3 -m http.server 8000
+npm run build
 ```
 
-Open:
+The output will be in `dist/`.
 
-- `http://localhost:8000`
+## Deploy to GitHub Pages
 
-## Edit + export workflow
+This repository is configured for **GitHub Pages via GitHub Actions** (not branch-root publishing).
 
-You can now edit directly on the org chart page (no manual CSV editing required):
+### Required GitHub settings
 
-1. Click a role box in the chart.
-2. Edit fields in the **Edit selected role** panel.
-3. Click **Save Changes** to update the chart immediately.
-4. Click **Download Updated CSV** to save your updated source file.
-5. Use **Print / Export PDF** for presentation output.
-6. Printing uses a full-size print clone so the exported PDF includes the entire chart (not only the visible scroll area).
+1. Go to **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Do **not** use “Deploy from a branch” for this Vite app.
 
-## Future-state mapping update
+### How deployment works
 
-The **Proposed Future State** tab uses the same tree style as Current State, while applying future-state hierarchy/data changes:
+- Workflow file: `.github/workflows/deploy.yml`
+- On push to `main`, GitHub Actions will:
+  1. install dependencies (`npm ci`)
+  2. run production build (`npm run build`)
+  3. upload the `dist/` artifact
+  4. deploy the artifact to GitHub Pages
 
-- Shared-branch annotation shown on the four team-lead roles under Bernard/Haley scope
-- Mitch moved under Edward Ballo in future-state data
-- Juan kept as a side-note card, off the formal tree
-- Future focus/performance fields shown on future cards for easier planning edits
+The Vite base path is set to `/editable-org-chart/`, so the published site loads at:
 
-## Publish on GitHub Pages (important)
+`https://chriscasensmith-source.github.io/editable-org-chart/`
 
-Use this checklist so the page works after publishing:
+## How non-technical users edit the org chart
 
-1. Push **both** `index.html` and `org_data.csv` to the branch used by GitHub Pages.
-2. In repo settings, enable Pages and point it to the correct branch/folder.
-3. Wait for Pages to rebuild, then hard refresh the site.
-4. The app requests `org_data.csv` with cache-busting and `no-store` to reduce stale-file issues after deployment.
+1. Turn on **Edit mode**.
+2. Click a role box.
+3. In the right editor panel, update:
+   - Name
+   - Title
+   - Manager (reporting line)
+   - Department
+   - Notes
+   - Extra lines
+   - Status tags
+   - Vacant / contractor flags
+   - Hide from chart
+   - Border style (including no outline)
+   - Department color
 
-The app first tries to load `org_data.csv`.  
-If that load fails, it falls back to embedded data in `index.html` and shows a message at the top.
-That means the page still renders, but updates in `org_data.csv` will not appear until the CSV is correctly published.
+Buttons include:
+- **Add Box**
+- **Duplicate**
+- **Delete**
 
-## Data model (`org_data.csv`)
+## Save and reload edits
 
-Required columns:
+Because this is static hosting:
 
-```text
-role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
+- Use **Export JSON** to save changes.
+- Use **Import JSON** later to continue editing.
+- Use **Export CSV** for optional tabular sharing.
+- Use **Reset Data** to restore the original seeded scenarios.
+
+## Print on 11 x 17
+
+1. Choose print mode in the toolbar:
+   - **Presentation** (clean leadership view)
+   - **Detailed** (shows notes/details)
+2. Click **Print 11x17**.
+3. In print dialog, keep **Landscape** and **11 x 17** paper.
+
+The stylesheet hides editing controls and keeps chart connectors for print.
+
+## One-time source update workflow (if needed)
+
+If you get a new workbook and want to rebuild the future-state seed:
+
+```bash
+npm run import:excel -- "future org chart test.xlsx" src/data/orgChartData.json
 ```
 
-### Field rules
+Then commit the updated JSON.
 
-- `scenario`: `current` or `future`
-- `role_id`: stable across scenarios for the same logical role
-- `manager_role_id`: points to another `role_id` to define reporting lines
-- `role_status`: use `vacant` for open roles; leave `employee_name` blank for vacant roles
-- `performance_band`: neutral status values only:
-  - `needs_support`
-  - `solid`
-  - `strong`
-- Current-state rows can leave `performance_band` blank if you do not want ratings shown.
-- `performance_label` (used in future tree cards):
-  - `high_potential`
-  - `promotable`
-  - `valued_contributor`
-  - `placement_issue`
-  - `too_new`
-  - `vacancy`
-- `future_focus_1` / `future_focus_2` / `future_focus_3`:
-  - planning priorities shown in **Proposed Future State** cards
-  - can be blank for current-state rows
+## Files that matter most
 
-## How to update
-
-1. Edit `org_data.csv`.
-2. Keep one row per role per scenario.
-3. Keep `role_id` consistent between current/future rows.
-4. Update `manager_role_id` when reporting lines change.
-5. Add or update future planning with `future_focus_1..3` on future rows.
-6. Refresh the page.
-
-No manual box drawing is needed—the chart is rendered from the CSV.
-
-## Printing / export
-
-Use **Print / Export PDF** in the app.  
-The app creates a dedicated print rendering of the full chart and hides UI controls in print mode, so export is not clipped to the on-screen viewport.
-
-### Color theme editing
-
-All section and connector shades are centralized in `index.html` under the `:root` CSS variables block (look for `/* ===== Theme tokens: edit colors here ===== */`).
+- `src/App.jsx` – app orchestration and state.
+- `src/components/OrgChart.jsx` – hierarchy rendering.
+- `src/components/EditorPanel.jsx` – no-code editing experience.
+- `src/styles/app.css` – modern visual styling + 11x17 print rules.
+- `src/data/orgChartData.json` – single editable source data model.
+- `scripts/importFromExcel.mjs` – one-time Excel conversion script.
