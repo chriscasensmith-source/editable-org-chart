@@ -1,5 +1,6 @@
 export const defaultDepartmentColors = {
   Executive: '#DDEBFF',
+  'All Operations': '#DCE9FF',
   'Packaging Operations': '#E8F7E8',
   'Processing Operations': '#FFF2DE',
   'Manufacturing COE': '#F2E8FF',
@@ -12,12 +13,31 @@ export const defaultDepartmentColors = {
   General: '#F7F7F7',
 };
 
-export const buildTree = (roles, hiddenIds = new Set()) => {
-  const visible = roles.filter((r) => !r.isHidden && !hiddenIds.has(r.id));
+export const normalizeRole = (role, index = 0) => ({
+  id: role.id || role.role_id || `R${String(index + 1).padStart(3, '0')}`,
+  name: role.name || role.employee_name || 'Open Role',
+  title: role.title || '',
+  department: role.department || 'General',
+  reportsTo: role.reportsTo || role.manager_role_id || null,
+  notes: Array.isArray(role.notes) ? role.notes : role.notes ? [String(role.notes)] : [],
+  statusTags: Array.isArray(role.statusTags) ? role.statusTags : role.statusTags ? [String(role.statusTags)] : [],
+  extraLines: Array.isArray(role.extraLines) ? role.extraLines : role.extraLines ? [String(role.extraLines)] : [],
+  isVacant: Boolean(role.isVacant),
+  isContractor: Boolean(role.isContractor),
+  isHidden: Boolean(role.isHidden),
+  boxStyle: {
+    borderStyle: role.boxStyle?.borderStyle || 'solid',
+    borderWidth: Number(role.boxStyle?.borderWidth || 1),
+  },
+  colorCategory: role.colorCategory || role.department || 'General',
+});
+
+export const buildTree = (roles) => {
+  const visible = roles.filter((r) => !r.isHidden);
   const byId = new Map(visible.map((r) => [r.id, { ...r, children: [] }]));
   const roots = [];
   byId.forEach((node) => {
-    if (node.reportsTo && byId.has(node.reportsTo)) {
+    if (node.reportsTo && byId.has(node.reportsTo) && node.reportsTo !== node.id) {
       byId.get(node.reportsTo).children.push(node);
     } else {
       roots.push(node);
@@ -29,6 +49,28 @@ export const buildTree = (roles, hiddenIds = new Set()) => {
   };
   sortByName(roots);
   return roots;
+};
+
+export const getDisplayRoleIds = (roles, search, filterDepartment) => {
+  const query = search.trim().toLowerCase();
+  const byId = new Map(roles.map((r) => [r.id, r]));
+  const matches = roles.filter((r) => {
+    if (filterDepartment && r.department !== filterDepartment) return false;
+    if (!query) return true;
+    return `${r.name} ${r.title}`.toLowerCase().includes(query);
+  });
+
+  const keep = new Set();
+  matches.forEach((role) => {
+    keep.add(role.id);
+    let current = role;
+    while (current?.reportsTo && byId.has(current.reportsTo)) {
+      keep.add(current.reportsTo);
+      current = byId.get(current.reportsTo);
+    }
+  });
+
+  return keep;
 };
 
 export const downloadFile = (name, content, type = 'application/json') => {

@@ -128,3 +128,4 @@ body { margin: 0; }
   .print-detailed .detail-list,
   .print-detailed .tag-row { display: block; }
 }
+.empty-state { margin: 0; padding: 2rem; color: #5c6680; text-align: center; }

@@ -12,6 +12,7 @@ This project treats the Excel workbook as a **one-time starting source**, then m
 - Lets users add, duplicate, delete, hide, and recolor roles.
 - Supports notes, extra detail lines, and status badges.
 - Exports and imports JSON so changes can be saved outside GitHub.
+- Includes an in-browser Excel import button for one-time reseeding when needed.
 - Exports CSV for spreadsheet sharing.
 - Prints cleanly on **11 x 17 landscape** with presentation and detailed modes.
 
@@ -56,13 +57,26 @@ The output will be in `dist/`.
 
 ## Deploy to GitHub Pages
 
-This repo is configured so Vite uses a GitHub Pages-safe base path when `GITHUB_PAGES=true`.
+This repository is configured for **GitHub Pages via GitHub Actions** (not branch-root publishing).
 
-1. Build for pages:
-   ```bash
-   GITHUB_PAGES=true npm run build
-   ```
-2. Deploy `dist/` to GitHub Pages (Actions or `gh-pages` branch flow).
+### Required GitHub settings
+
+1. Go to **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Do **not** use “Deploy from a branch” for this Vite app.
+
+### How deployment works
+
+- Workflow file: `.github/workflows/deploy.yml`
+- On push to `main`, GitHub Actions will:
+  1. install dependencies (`npm ci`)
+  2. run production build (`npm run build`)
+  3. upload the `dist/` artifact
+  4. deploy the artifact to GitHub Pages
+
+The Vite base path is set to `/editable-org-chart/`, so the published site loads at:
+
+`https://chriscasensmith-source.github.io/editable-org-chart/`
 
 ## How non-technical users edit the org chart
 
@@ -93,6 +107,7 @@ Because this is static hosting:
 - Use **Export JSON** to save changes.
 - Use **Import JSON** later to continue editing.
 - Use **Export CSV** for optional tabular sharing.
+- Use **Reset Data** to restore the original seeded scenarios.
 
 ## Print on 11 x 17
 
