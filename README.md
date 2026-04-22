@@ -44,6 +44,7 @@ You can now edit directly on the org chart page (no manual CSV editing required)
 3. Click **Save Changes** to update the chart immediately.
 4. Click **Download Updated CSV** to save your updated source file.
 5. Use **Print / Export PDF** for presentation output.
+6. Printing uses a full-size print clone so the exported PDF includes the entire chart (not only the visible scroll area).
 
 ## Future-state mapping update
 
@@ -111,5 +112,5 @@ No manual box drawing is needed—the chart is rendered from the CSV.
 
 ## Printing / export
 
-Use browser print (`Ctrl/Cmd + P`) and save as PDF.  
-The tree now auto-scales to fit viewport width and applies print scaling for 11x17 landscape export to reduce card cut-off.
+Use **Print / Export PDF** in the app.  
+The app creates a dedicated print rendering of the full chart and hides UI controls in print mode, so export is not clipped to the on-screen viewport.
