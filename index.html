@@ -5,51 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Editable Org Chart</title>
 <style>
+/* ===== Theme tokens: edit colors here ===== */
 :root{
-  --bg:#f4f6fa;--panel:#fff;--border:#d5deea;--line:#bfd0e4;--text:#1f2937;
+  --c-exec-blue:#255583;
+  --c-level-blue:#3a7ab6;
+  --c-packaging:#b7d9be;
+  --c-processing:#efe1b8;
+  --c-coe:#d2c7e5;
+  --c-support:#a7bfd7;
+  --c-side-note:#fff200;
+  --c-connector:#b7c5d8;
+  --c-card-border:#b8c4d9;
+  --c-card-bg:#ffffff;
+  --c-bg:#f4f6fa;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--c-bg);color:#1f2937}
 .container{max-width:1560px;margin:0 auto;padding:14px}
 h1{margin:0 0 8px}
-.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px;position:sticky;top:0;z-index:10}
-.btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer}
-.btn.active{background:#dbeafe}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid #d5deea;border-radius:10px;padding:10px;position:sticky;top:0;z-index:10}
+.btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:7px 11px;font-weight:700;cursor:pointer}.btn.active{background:#dbeafe}
 .legend{margin-left:auto;font-size:12px;color:#64748b}
-.chart-shell{margin-top:10px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:auto;min-height:620px;max-height:78vh}
-.chart-inner{position:relative;display:inline-block;transform-origin:top left}
-.chart-svg{position:absolute;inset:0;pointer-events:none}
-.node{position:absolute;width:230px;min-height:118px;border:1px solid #b8c4d9;border-radius:10px;padding:10px;background:#fff;box-shadow:0 1px 4px rgba(15,23,42,.06);cursor:pointer;break-inside:avoid-page}
-.node:hover{box-shadow:0 4px 12px rgba(15,23,42,.13)}
-.node.selected{outline:3px solid #60a5fa}
-.node.vacant{border-style:dashed}
-.node .name{font-size:17px;font-weight:800;line-height:1.2}
-.node .title{font-size:14px;font-weight:600;color:#334155;line-height:1.25;margin-top:2px;word-break:break-word}
-.node .meta{font-size:12px;color:#64748b;margin-top:5px}
-.node .notes{font-size:11px;color:#475569;margin-top:7px;border-top:1px dashed rgba(71,85,105,.3);padding-top:6px;line-height:1.3;word-break:break-word}
+.chart-shell{margin-top:10px;background:#fff;border:1px solid #d5deea;border-radius:12px;padding:14px;overflow:auto;min-height:620px;max-height:78vh}
+.chart-shell.future{min-height:auto;max-height:none;overflow:visible}
+
+/* current tree */
+.tree ul{padding-top:22px;position:relative;display:flex;justify-content:center;margin:0;width:max-content}
+.tree li{list-style:none;text-align:center;position:relative;padding:22px 10px 0;min-width:240px}
+.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:2px solid var(--c-connector);width:50%;height:22px}
+.tree li::after{right:auto;left:50%;border-left:2px solid var(--c-connector)}
+.tree li:only-child::before,.tree li:only-child::after{display:none}.tree li:first-child::before,.tree li:last-child::after{border:0}.tree li:last-child::before{border-right:2px solid var(--c-connector)}.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:2px solid var(--c-connector);height:22px}
+
+.card{border:1px solid var(--c-card-border);border-left:6px solid #4b83d6;background:var(--c-card-bg);border-radius:10px;padding:10px;min-height:112px;box-shadow:0 1px 4px rgba(15,23,42,.06);text-align:left;cursor:pointer;max-width:260px}
+.card:hover{box-shadow:0 4px 10px rgba(15,23,42,.12)}
+.card.vacant{border-left-color:#f97316;background:#fff7ed}
+.card .name{font-size:17px;font-weight:800;line-height:1.2}.card .title{font-size:14px;font-weight:600;color:#334155;margin-top:2px}.card .meta{font-size:12px;color:#64748b;margin-top:5px}.card .notes{font-size:11px;color:#475569;margin-top:7px;border-top:1px dashed rgba(71,85,105,.3);padding-top:6px;line-height:1.3}
+
+/* future board */
+.future-wrap{display:flex;justify-content:center;padding:8px 0}
+.future-board{width:min(1360px,100%);margin:0 auto}
+.fb-title{font-size:40px;color:var(--c-exec-blue);font-weight:800;text-align:center}
+.fb-sub{font-style:italic;color:#5b6773;text-align:center;margin:6px 0 10px}
+.level{padding:8px 12px;color:#fff;font-size:24px;font-weight:800;background:var(--c-level-blue);margin-top:8px}
+.exec-card{max-width:740px;margin:10px auto;background:var(--c-exec-blue);color:#fff;text-align:center;padding:16px;border-radius:4px;font-weight:700;line-height:1.35}
+.exec-card .name{font-size:30px;font-weight:800}
+.row5{display:grid;grid-template-columns:repeat(5,minmax(180px,1fr));gap:8px}
+.dr{border:1px solid #7fa0c0;padding:10px;min-height:120px;text-align:center;cursor:pointer}
+.dr .name{font-size:23px;font-weight:800}.dr .title{font-size:18px}.dr .meta{font-size:17px;font-weight:700;margin-top:4px}
+.dr.support{background:var(--c-support)}.dr.pack{background:var(--c-packaging)}.dr.proc{background:var(--c-processing)}.dr.coe{background:var(--c-coe)}
+.section{margin-top:12px;border:1px solid #d8e1ea;background:#fff}
+.section .head{padding:8px 12px;font-size:28px;font-weight:800}
+.section.pack .head{background:var(--c-packaging);color:#00662a}
+.section.proc .head{background:var(--c-processing);color:#886000}
+.section.coe .head{background:var(--c-coe);color:#5a32a4}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr));gap:8px;padding:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:8px;padding:8px}
+.fcard{border:1px solid var(--c-card-border);padding:8px;min-height:126px;cursor:pointer;border-radius:6px}
+.section.pack .fcard{background:#c4e4c6;border-color:#89be85}
+.section.proc .fcard{background:#f2df9b;border-color:#d9b860}
+.section.coe .fcard{background:#d4cae7;border-color:#8b67c0}
+.fcard .name{font-size:24px;font-weight:800}.fcard .title{font-size:18px;font-style:italic}.fcard .focus{font-size:16px;margin-top:6px}.fcard .status{font-size:16px;margin-top:8px;font-style:italic}
+.shared-branch{border:2px dashed #84a98c;border-radius:8px;padding:8px;margin:8px;background:#f8fffa}
+.shared-branch .label{font-size:14px;font-weight:700;margin-bottom:4px}
+.shared-branch .items{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:8px}
+.shared-item{border:1px solid #c6d7c6;border-radius:6px;padding:6px;background:#fff;font-size:13px;line-height:1.3}
+.side-note{background:var(--c-side-note);border:1px solid #8a7f00;padding:8px;font-size:18px;display:inline-block;margin-top:8px}
+.engineer-notes{font-size:17px;line-height:1.4;padding:8px 12px;color:#8a6600}
+
+.summary,.legend-block{margin-top:10px;background:#2f2f32;color:#fff}
+.summary h3,.legend-block h3{margin:0;padding:8px 12px;font-size:24px}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;color:#111}
+.summary-grid>div{text-align:center;padding:10px}.summary-grid .n{font-size:36px;font-weight:800}
+.legend-grid{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;color:#111}
+.legend-grid>div{padding:8px;border-right:1px solid #ddd;font-size:14px;line-height:1.35}
+
 .help{margin-top:10px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;color:#1e3a8a}
 
-/* modal editor */
-#editorModal{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50}
-#editorModal.open{display:flex}
-.modal{background:#fff;width:min(840px,95vw);max-height:90vh;overflow:auto;border-radius:12px;padding:14px}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:10px}
-.grid label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:4px}
-.grid input,.grid select,.grid textarea{border:1px solid #cbd5e1;border-radius:8px;padding:8px;font:inherit;font-size:13px}
-.grid textarea{min-height:70px}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
-
-/* hidden container used only for reliable print rendering */
+/* print clone */
 #print-root{display:none}
-
 @media print{
   body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .controls,.help,#editorModal,.container>h1,.container>.subtitle,.chart-shell{display:none!important}
-  #print-root{display:block!important;padding:0!important;margin:0!important}
-  #print-root .chart-inner{transform:none!important}
-  #print-root .node{box-shadow:none;break-inside:avoid-page;page-break-inside:avoid}
-  #print-root .chart-svg path{stroke:#8ea4bf;stroke-width:1.6}
-  @page{size:17in 11in;margin:.3in}
+  .controls,.help,.container>h1,#editorModal,.chart-shell{display:none!important}
+  #print-root{display:block!important;padding:0;margin:0}
+  #print-root .future-wrap{display:block!important;padding:0}
+  #print-root .future-board{width:100%!important;max-width:none!important}
+  #print-root .card,#print-root .fcard,#print-root .dr{break-inside:avoid-page;page-break-inside:avoid;box-shadow:none}
+  @page{size:landscape;margin:.25in}
 }
 </style>
 </head>
@@ -61,41 +102,34 @@ h1{margin:0 0 8px}
     <button class="btn" data-scenario="future">Proposed Future State</button>
     <button id="printBtn" class="btn">Print / Export PDF</button>
     <button id="downloadBtn" class="btn">Download Updated CSV</button>
-    <div class="legend">Click a role card to edit</div>
+    <div class="legend">Click any card to edit</div>
   </div>
-
   <div class="chart-shell"><div id="chart"></div></div>
-  <div class="help">Balanced top-down tree, clean connectors, and full-chart printing through the Print / Export button.</div>
+  <div class="help">Future hierarchy follows the screenshot source-of-truth with shared branch + side annotation handling.</div>
 </div>
 
-<div id="editorModal">
-  <div class="modal">
+<div id="editorModal" style="position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:50">
+  <div style="background:#fff;width:min(840px,95vw);max-height:90vh;overflow:auto;border-radius:12px;padding:14px">
     <h3 style="margin:0 0 10px">Edit Role</h3>
-    <div class="grid">
-      <label>Employee Name<input id="f_employee_name"></label>
-      <label>Title<input id="f_title"></label>
-      <label>Manager Role ID<input id="f_manager_role_id"></label>
-      <label>Department<input id="f_department"></label>
-      <label>State<input id="f_state"></label>
-      <label>Role Status<select id="f_role_status"><option>filled</option><option>vacant</option></select></label>
-      <label>Performance Label<input id="f_performance_label"></label>
-      <label>Future Focus 1<input id="f_future_focus_1"></label>
-      <label>Future Focus 2<input id="f_future_focus_2"></label>
-      <label>Future Focus 3<input id="f_future_focus_3"></label>
-      <label style="grid-column:1/-1">Notes<textarea id="f_notes"></textarea></label>
+    <div style="display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:10px">
+      <label>Employee Name<input id="f_employee_name"></label><label>Title<input id="f_title"></label>
+      <label>Manager Role ID<input id="f_manager_role_id"></label><label>Department<input id="f_department"></label>
+      <label>State<input id="f_state"></label><label>Role Status<select id="f_role_status"><option>filled</option><option>vacant</option></select></label>
+      <label>Performance Label<input id="f_performance_label"></label><label>Future Focus 1<input id="f_future_focus_1"></label>
+      <label>Future Focus 2<input id="f_future_focus_2"></label><label>Future Focus 3<input id="f_future_focus_3"></label>
+      <label style="grid-column:1/-1">Notes<textarea id="f_notes" style="min-height:70px"></textarea></label>
     </div>
-    <div class="modal-actions">
-      <button id="cancelEdit" class="btn">Cancel</button>
-      <button id="saveEdit" class="btn" style="background:#dbeafe">Save</button>
-    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button id="cancelEdit" class="btn">Cancel</button><button id="saveEdit" class="btn" style="background:#dbeafe">Save</button></div>
   </div>
 </div>
 
-<!-- Print-only rendering mount -->
 <div id="print-root"></div>
 
 <script>
 const state={scenario:'current',rows:[],selectedRoleId:null};
+const chartEl=document.getElementById('chart');
+const printRoot=document.getElementById('print-root');
+const modal=document.getElementById('editorModal');
 const EMBEDDED_CSV=`role_id,scenario,employee_name,title,manager_role_id,department,state,role_status,performance_band,performance_label,future_focus_1,future_focus_2,future_focus_3,notes
 R001,current,Nichole Jones,VP Manufacturing North America,,All Operations,current,filled,,,,,,Top operations leader from current org chart
 R001,future,Nichole Jones,VP Manufacturing North America,,Executive,future,filled,,,Strategic Transformation,,,Assumed unchanged (not explicitly listed in future workbook)
@@ -167,115 +201,103 @@ R034,current,Scott Fitzsimmons,Specialist PM/Work Orders,R033,Manufacturing COE,
 R034,future,Scott Fitzsimmons,Specialist PM/Work Orders,R004,Manufacturing COE,future,filled,solid,valued_contributor,PM,Work Orders,Reliability,Assumed retained (not listed explicitly)
 R035,current,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,current,filled,,,,,,
 R035,future,Chris Smith,Sr Specialist Training,R004,Manufacturing COE,future,filled,strong,promotable,Training,Culture,Communications,Future workbook suggests increased communications/culture emphasis`;
-const chartEl=document.getElementById('chart');
-const printRoot=document.getElementById('print-root');
-const modal=document.getElementById('editorModal');
-const NODE_W=230,LEVEL_H=175,NODE_H=118,SIBLING_GAP=0.42,LEFT_PAD=30;
-const DEPT_COLORS=['#f2f8ff','#eefaf3','#fff8ec','#f5f0ff','#eef7f7','#fff1f2','#f8f5ef','#ecfbff'];
 
 function parseCSV(t){const rows=[];let c='',q=false,r=[];for(let i=0;i<t.length;i++){const ch=t[i],n=t[i+1];if(ch==='"'){if(q&&n==='"'){c+='"';i++;}else q=!q;}else if(ch===','&&!q){r.push(c);c='';}else if((ch==='\n'||ch==='\r')&&!q){if(ch==='\r'&&n==='\n')i++;r.push(c);c='';if(r.some(x=>x!==''))rows.push(r);r=[];}else c+=ch;}if(c!==''||r.length){r.push(c);rows.push(r);}const h=rows[0].map(x=>x.trim());return rows.slice(1).map(v=>{const o={};h.forEach((k,i)=>o[k]=(v[i]||'').trim());return o;});}
 function toCSV(rows){if(!rows.length)return '';const fields=Object.keys(rows[0]);const esc=v=>{const s=(v??'').toString();return /[",\n]/.test(s)?`"${s.replace(/"/g,'""')}"`:s;};return [fields.join(','),...rows.map(r=>fields.map(f=>esc(r[f])).join(','))].join('\n');}
 function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function perf(v){const m={high_potential:'High Potential',promotable:'Promotable',valued_contributor:'Valued Contributor',placement_issue:'Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
+function perf(v){const m={high_potential:'⭐ High Potential',promotable:'📈 Promotable',valued_contributor:'✓ Valued Contributor',placement_issue:'⚠️ Placement Issue',too_new:'Too New',vacancy:'Vacancy'};return m[v]||'';}
+function focus(r){return [r.future_focus_1,r.future_focus_2,r.future_focus_3].filter(Boolean).join(' | ')}
 
-function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[],w:1,x:0,y:0}]));map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
-function measure(n){if(!n.children.length){n.w=1;return 1;}let total=0;n.children.forEach((c,i)=>{total+=measure(c);if(i)total+=SIBLING_GAP});n.w=Math.max(1,total);return n.w;}
-function place(n,left,depth){n.x=left+n.w/2;n.y=depth;let cur=left;n.children.forEach(c=>{place(c,cur,depth+1);cur+=c.w+SIBLING_GAP;});}
-function flatten(n,a=[]){a.push(n);n.children.forEach(c=>flatten(c,a));return a;}
-function deptMap(rows){const d=[...new Set(rows.map(r=>r.department||'Unassigned'))].sort();const m={};d.forEach((k,i)=>m[k]=DEPT_COLORS[i%DEPT_COLORS.length]);return m;}
+// ---- Current state tree renderer ----
+function buildTree(rows){const map=new Map(rows.map(r=>[r.role_id,{...r,children:[]}])) ;map.forEach(n=>{if(n.manager_role_id&&map.has(n.manager_role_id))map.get(n.manager_role_id).children.push(n)});const root=map.get('R001');if(!root)return null;const sort=(a,b)=>(a.title||'').localeCompare(b.title||'')||(a.employee_name||'').localeCompare(b.employee_name||'');map.forEach(n=>n.children.sort(sort));return root;}
+function nodeHtml(n){const notes=n.notes?`<div class="notes">${esc(n.notes)}</div>`:'';return `<li><div class="card ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes}</div>${n.children.length?`<ul>${n.children.map(nodeHtml).join('')}</ul>`:''}</li>`;}
+function renderCurrent(target,forPrint=false){const rows=state.rows.filter(r=>r.scenario==='current');const root=buildTree(rows);if(!root){target.innerHTML='<p>Missing root role (R001).</p>';return;}target.innerHTML=`<div class="tree"><ul>${nodeHtml(root)}</ul></div>`;if(!forPrint)bindCardClicks(target);}
 
-/**
- * Core renderer used for screen and print.
- * forPrint=true disables click handlers and scaling transforms.
- */
-function renderChart(target,{forPrint=false}={}){
-  const rows=state.rows.filter(r=>r.scenario===state.scenario);
-  const root=buildTree(rows);
-  if(!root){target.innerHTML='<p>Missing root role (R001).</p>';return null;}
-  measure(root);place(root,0,0);
-  const nodes=flatten(root),colors=deptMap(rows);
-  const maxX=Math.max(...nodes.map(n=>n.x)),maxY=Math.max(...nodes.map(n=>n.y));
-  const width=Math.ceil(maxX*NODE_W+NODE_W/2+LEFT_PAD),height=Math.ceil((maxY+1)*LEVEL_H+NODE_H+LEFT_PAD);
+// ---- Future state structured renderer (screenshot source of truth) ----
+function byId(id){return state.rows.find(r=>r.scenario==='future'&&r.role_id===id);} 
+function roleCard(r,cls='fcard',extra=''){if(!r)return `<div class="${cls}"></div>`;return `<div class="${cls}" data-role-id="${r.role_id}"><div class="name">${esc(r.employee_name||'Open')}</div><div class="title">${esc(r.title)}</div><div class="focus">${esc(focus(r))}</div><div class="status">${esc(perf(r.performance_label))}</div>${extra}</div>`;}
+function directCard(id,cls,icon=''){const r=byId(id);if(!r)return `<div class="dr ${cls}"></div>`;return `<div class="dr ${cls}" data-role-id="${id}"><div class="name">${icon} ${esc(r.employee_name||'Open')}</div><div class="title">${esc(r.title)}</div><div class="meta">${esc(perf(r.performance_label))}</div></div>`;}
+function renderFuture(target,forPrint=false){
+  // hierarchy decisions based on screenshot + user rules:
+  // - Edward, Kim, Erica, Amy, Kimberly under Nichole
+  // - Bernard/Haley shared team-lead branch
+  // - Mitch under Edward
+  // - Juan as side annotation (not in formal tree)
+  const counts={high_potential:0,promotable:0,valued_contributor:0,placement_issue:0,vacancy:0};
+  state.rows.filter(r=>r.scenario==='future').forEach(r=>{if(r.role_status==='vacant')counts.vacancy++;if(counts[r.performance_label]!=null)counts[r.performance_label]++;});
 
-  let lines='';
-  for(const n of nodes){
-    for(const c of n.children){
-      const x1=n.x*NODE_W,y1=n.y*LEVEL_H+NODE_H,x2=c.x*NODE_W,y2=c.y*LEVEL_H,mid=(y1+y2)/2;
-      lines+=`<path d="M${x1} ${y1} V${mid} H${x2} V${y2}" fill="none" stroke="var(--line)" stroke-width="2"/>`;
-    }
-  }
+  target.innerHTML=`<div class="future-wrap"><div class="future-board">
+    <div class="fb-title">FUTURE STATE ORG CHART</div>
+    <div class="fb-sub">Supply Chain  •  Future Focus Areas  •  Based on CURRENT Perceived Performance</div>
+    <div class="level" style="background:var(--c-exec-blue)">▼ LEVEL 1: EXECUTIVE</div>
+    <div class="exec-card" data-role-id="R001"><div class="name">NICHOLE JONES</div><div>VP Manufacturing North America</div><div>Strategic Transformation</div></div>
+    <div class="level">▼ LEVEL 2: DIRECT REPORTS TO VP</div>
+    <div class="row5">${directCard('R005','support','📋')}${directCard('R003','pack','⚙️')}${directCard('R026','proc','⚙️')}${directCard('R004','coe','🏭')}${directCard('R009','support','🛡️')}</div>
 
-  const cards=nodes.map(n=>{
-    const left=n.x*NODE_W-NODE_W/2,top=n.y*LEVEL_H;
-    const f=[n.future_focus_1,n.future_focus_2,n.future_focus_3].filter(Boolean).join(' | ');
-    const notes=state.scenario==='future'?[perf(n.performance_label),f,n.notes].filter(Boolean).join(' • '):n.notes;
-    const selected=n.role_id===state.selectedRoleId?'selected':'';
-    return `<div class="node ${selected} ${n.role_status==='vacant'?'vacant':''}" data-role-id="${n.role_id}" style="left:${left}px;top:${top}px;background:${colors[n.department||'Unassigned']||'#fff'}"><div class="name">${esc(n.employee_name||'VACANT')}</div><div class="title">${esc(n.title||'')}</div><div class="meta">${esc(n.department||'')} • ${esc(n.state||'')}</div>${notes?`<div class="notes">${esc(notes)}</div>`:''}</div>`;
-  }).join('');
+    <div class="section pack">
+      <div class="head">📦 PACKAGING OPERATIONS</div>
+      <div class="grid4">${roleCard(byId('R008'))}${roleCard(byId('R007'))}${roleCard(byId('R011'))}${roleCard(byId('R016'))}</div>
+      <div class="shared-branch">
+        <div class="label">Shared branch under Bernard Filic + Haley Buckley</div>
+        <div class="items">
+          <div class="shared-item" data-role-id="R010">${esc(byId('R010')?.employee_name||'Open')}<br>${esc(focus(byId('R010')||{}))}</div>
+          <div class="shared-item" data-role-id="R015">${esc(byId('R015')?.employee_name||'Open')}<br>${esc(focus(byId('R015')||{}))}</div>
+          <div class="shared-item" data-role-id="R023">${esc(byId('R023')?.employee_name||'Open')}<br>${esc(focus(byId('R023')||{}))}</div>
+          <div class="shared-item" data-role-id="R012">${esc(byId('R012')?.employee_name||'Open')}<br>${esc(focus(byId('R012')||{}))}</div>
+        </div>
+      </div>
+      <div class="engineer-notes" data-role-id="R006">↳ Mitch reports to Edward Ballo: ${esc(byId('R006')?.title||'')}</div>
+      <div class="side-note" data-role-id="R014">Juan Ramirez — Don't know if he is staying</div>
+    </div>
 
-  target.innerHTML=`<div class="chart-inner" style="width:${width}px;height:${height}px"><svg class="chart-svg" width="${width}" height="${height}">${lines}</svg>${cards}</div>`;
+    <div class="section proc">
+      <div class="head">⚙️ PROCESSING OPERATIONS   ⚠️ Wide Span</div>
+      <div class="grid4">${roleCard(byId('R019'),'fcard')}${roleCard(byId('R020'),'fcard')}${roleCard(byId('R021'),'fcard')}${roleCard(byId('R022'),'fcard')}</div>
+      <div class="grid4">${roleCard(byId('R017'),'fcard')}${roleCard(byId('R024'),'fcard')}${roleCard(byId('R025'),'fcard')}<div class="fcard"></div></div>
+      <div class="engineer-notes">↳ ${esc(byId('R027')?.employee_name||'')} — ${esc(focus(byId('R027')||{}))}<br>↳ ${esc(byId('R028')?.employee_name||'')} — ${esc(focus(byId('R028')||{}))}<br>↳ ${esc(byId('R029')?.employee_name||'')} — ${esc(focus(byId('R029')||{}))}</div>
+    </div>
 
-  if(!forPrint){
-    target.querySelectorAll('.node').forEach(el=>el.addEventListener('click',()=>openEditor(el.dataset.roleId)));
-    fitToViewport();
-  }
+    <div class="section coe">
+      <div class="head">🏭 MANUFACTURING COE</div>
+      <div class="grid4">${roleCard(byId('R030'),'fcard')}${roleCard(byId('R031'),'fcard')}${roleCard(byId('R032'),'fcard')}${roleCard(byId('R033'),'fcard')}</div>
+      <div class="grid3">${roleCard(byId('R035'),'fcard')}${roleCard(byId('R018'),'fcard')}<div class="fcard" data-role-id="R034"><div class="name">↳ ${esc(byId('R034')?.employee_name||'')}</div><div class="title">${esc(byId('R034')?.title||'')}</div><div class="focus">${esc(focus(byId('R034')||{}))}</div><div class="status">${esc(perf(byId('R034')?.performance_label))}</div></div></div>
+    </div>
 
-  return {width,height};
+    <div class="summary"><h3>📊 PERFORMANCE SUMMARY</h3><div class="summary-grid"><div>⭐ High Potential<div class="n">${counts.high_potential}</div></div><div>📈 Promotable<div class="n">${counts.promotable}</div></div><div>✓ Valued Contributor<div class="n">${counts.valued_contributor}</div></div><div>⚠️ Placement Issue<div class="n">${counts.placement_issue}</div></div><div>Vacancy<div class="n">${counts.vacancy}</div></div></div></div>
+    <div class="legend-block"><h3>🔑 LEGEND & RATING KEY</h3><div class="legend-grid"><div>Executive blue</div><div>Packaging green</div><div>Processing gold</div><div>COE purple</div><div>Support blue-gray</div></div></div>
+  </div></div>`;
+  if(!forPrint)bindCardClicks(target);
 }
 
-function fitToViewport(){
-  const shell=document.querySelector('.chart-shell');
-  const inner=chartEl.querySelector('.chart-inner');
-  if(!shell||!inner) return;
-  inner.style.transform='scale(1)';
-  const scale=Math.min(1,(shell.clientWidth-16)/inner.offsetWidth);
-  inner.style.transformOrigin='top left';
-  inner.style.transform=`scale(${scale})`;
-  // Keep container tall enough after scaling to avoid clipped bottom nodes.
-  shell.style.minHeight=`${Math.ceil(inner.offsetHeight*scale)+30}px`;
-}
+function bindCardClicks(root){root.querySelectorAll('[data-role-id]').forEach(el=>el.addEventListener('click',(e)=>{e.stopPropagation();openEditor(el.getAttribute('data-role-id'));}));}
+function render(target=chartEl,forPrint=false){if(target===chartEl){document.querySelector('.chart-shell').classList.toggle('future',state.scenario==='future');}if(state.scenario==='future')renderFuture(target,forPrint);else renderCurrent(target,forPrint);} 
 
-function getSelectedRow(){return state.rows.find(r=>r.role_id===state.selectedRoleId&&r.scenario===state.scenario);}
-function openEditor(roleId){state.selectedRoleId=roleId;const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>document.getElementById('f_'+f).value=r[f]||'');modal.classList.add('open');renderChart(chartEl);}
-function saveEditor(){const r=getSelectedRow();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>r[f]=document.getElementById('f_'+f).value.trim());modal.classList.remove('open');renderChart(chartEl);}
+function getSelected(){return state.rows.find(r=>r.role_id===state.selectedRoleId&&r.scenario===state.scenario);}
+function openEditor(roleId){state.selectedRoleId=roleId;const r=getSelected();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>document.getElementById('f_'+f).value=r[f]||'');modal.style.display='flex';}
+function saveEditor(){const r=getSelected();if(!r)return;['employee_name','title','manager_role_id','department','state','role_status','performance_label','future_focus_1','future_focus_2','future_focus_3','notes'].forEach(f=>r[f]=document.getElementById('f_'+f).value.trim());modal.style.display='none';render();}
 
-/**
- * Print flow:
- * 1) Render a full-size, unscaled chart clone into #print-root
- * 2) Call window.print()
- * 3) Clear print DOM in afterprint
- * This avoids printing only the visible scroll viewport.
- */
-function printFullChart(){
+// Print logic: render full natural-size chart in dedicated print window, then print.
+function printFull(){
   printRoot.innerHTML='';
-  renderChart(printRoot,{forPrint:true});
-  window.print();
+  render(printRoot,true);
+  const w=window.open('','_blank','noopener,noreferrer');
+  if(!w){window.print();return;}
+  const styles=document.querySelector('style').textContent;
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Org Chart Print</title><style>${styles}</style></head><body>${printRoot.innerHTML}</body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>{w.print();w.close();printRoot.innerHTML='';},120);
 }
-function clearPrintRoot(){printRoot.innerHTML='';}
+window.addEventListener('afterprint',()=>{printRoot.innerHTML='';});
 
-function bind(){
-  document.querySelectorAll('[data-scenario]').forEach(btn=>btn.addEventListener('click',()=>{
-    state.scenario=btn.dataset.scenario;
-    document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    state.selectedRoleId=null;
-    modal.classList.remove('open');
-    renderChart(chartEl);
-  }));
-  document.getElementById('downloadBtn').addEventListener('click',()=>{const csv=toCSV(state.rows);const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='org_data.csv';a.click();URL.revokeObjectURL(url);});
-  document.getElementById('printBtn').addEventListener('click',printFullChart);
-  document.getElementById('cancelEdit').addEventListener('click',()=>modal.classList.remove('open'));
+function bind(){document.querySelectorAll('[data-scenario]').forEach(btn=>btn.addEventListener('click',()=>{state.scenario=btn.dataset.scenario;document.querySelectorAll('[data-scenario]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}));
+  document.getElementById('printBtn').addEventListener('click',printFull);
+  document.getElementById('downloadBtn').addEventListener('click',()=>{const csv=toCSV(state.rows);const b=new Blob([csv],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='org_data.csv';a.click();URL.revokeObjectURL(u);});
+  document.getElementById('cancelEdit').addEventListener('click',()=>modal.style.display='none');
   document.getElementById('saveEdit').addEventListener('click',saveEditor);
-  window.addEventListener('resize',fitToViewport);
-  window.addEventListener('afterprint',clearPrintRoot);
 }
 
-async function load(){
-  try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rows=parseCSV(await r.text());}
-  catch(e){state.rows=parseCSV(EMBEDDED_CSV);}
-  bind();
-  renderChart(chartEl);
-}
+async function load(){try{const r=await fetch(`org_data.csv?v=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error();state.rows=parseCSV(await r.text());}catch(e){state.rows=parseCSV(EMBEDDED_CSV);}bind();render();}
 load();
 </script>
 </body>

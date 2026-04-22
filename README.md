@@ -13,7 +13,7 @@ A lightweight, business-friendly org chart app powered by a single CSV source fi
 - Highlights vacant roles clearly.
 - Uses neutral `performance_band` statuses with color coding.
 - Shows extra future-planning focus fields in Future view.
-- Both Current and Future are rendered as compact, executive-ready top-down org trees.
+- Current State is rendered as a tree; Proposed Future State is rendered as a structured executive board based on the provided screenshots.
 - Includes print-friendly layout for PDF export.
 - Includes an in-browser CSV editor with apply + download actions.
 
@@ -48,13 +48,14 @@ You can now edit directly on the org chart page (no manual CSV editing required)
 
 ## Future-state mapping update
 
-The **Proposed Future State** tab is now a clean top-down org tree (same structural style as Current) with:
+The **Proposed Future State** tab is aligned to the screenshot structure with:
 
-- Consistent card sizes
-- Even row/column spacing
-- Straight connector paths
-- Subtle department/function pastel color fills
-- A compact fit-to-screen layout for readability and printing
+- Executive and direct-report level bars
+- Packaging, Processing (with Wide Span), and Manufacturing COE sections
+- Shared Bernard + Haley branch handling for team leads
+- Mitch shown under Edward
+- Juan shown as side-note exception card
+- Processing engineer note list shown off to the side
 
 ## Publish on GitHub Pages (important)
 
@@ -114,3 +115,7 @@ No manual box drawing is needed—the chart is rendered from the CSV.
 
 Use **Print / Export PDF** in the app.  
 The app creates a dedicated print rendering of the full chart and hides UI controls in print mode, so export is not clipped to the on-screen viewport.
+
+### Color theme editing
+
+All section and connector shades are centralized in `index.html` under the `:root` CSS variables block (look for `/* ===== Theme tokens: edit colors here ===== */`).
