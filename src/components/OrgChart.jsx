@@ -1,7 +1,7 @@
 import React from 'react';
 import OrgNode from './OrgNode';
 
-function OrgChart({ roots, onSelect, colors, showNotes, showExtras, isEditMode }) {
+function OrgChart({ roots, onSelect, colors, showNotes, showExtras, isEditMode, chartRef }) {
   if (!roots.length) {
     return (
       <section className="org-chart-wrap">
@@ -12,7 +12,7 @@ function OrgChart({ roots, onSelect, colors, showNotes, showExtras, isEditMode }
 
   return (
     <section className="org-chart-wrap">
-      <div className="org-chart">
+      <div className="org-chart" ref={chartRef}>
         <ul>
           {roots.map((root) => (
             <OrgNode

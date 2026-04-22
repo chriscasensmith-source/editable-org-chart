@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import startingData from './data/orgChartData.json';
 import OrgChart from './components/OrgChart';
 import EditorPanel from './components/EditorPanel';
@@ -7,26 +7,35 @@ import { parseExcelWorkbook } from './utils/excelImport';
 import { buildTree, defaultDepartmentColors, downloadFile, getDisplayRoleIds, normalizeRole, rolesToCsv } from './utils/orgChartUtils';
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
-const STORAGE_KEY = 'editable-org-chart-state-v1';
+const STORAGE_KEY = 'editable-org-chart-state-v2';
 
 const getInitialState = () => {
   try {
     const cached = localStorage.getItem(STORAGE_KEY);
-    if (!cached) return clone(startingData.scenarios);
+    if (!cached) return { scenarios: clone(startingData.scenarios), colors: defaultDepartmentColors };
     const parsed = JSON.parse(cached);
-    if (!parsed || typeof parsed !== 'object') return clone(startingData.scenarios);
-    return Object.fromEntries(
-      Object.entries(parsed).map(([key, roles]) => [key, Array.isArray(roles) ? roles.map(normalizeRole) : []]),
-    );
+    if (!parsed || typeof parsed !== 'object') return { scenarios: clone(startingData.scenarios), colors: defaultDepartmentColors };
+
+    const scenarios = parsed.scenarios && typeof parsed.scenarios === 'object'
+      ? Object.fromEntries(
+        Object.entries(parsed.scenarios).map(([key, roles]) => [key, Array.isArray(roles) ? roles.map(normalizeRole) : []]),
+      )
+      : clone(startingData.scenarios);
+
+    return {
+      scenarios,
+      colors: parsed.colors && typeof parsed.colors === 'object' ? parsed.colors : defaultDepartmentColors,
+    };
   } catch {
-    return clone(startingData.scenarios);
+    return { scenarios: clone(startingData.scenarios), colors: defaultDepartmentColors };
   }
 };
 
 function App() {
-  const [colors, setColors] = useState(defaultDepartmentColors);
+  const persistedState = useMemo(() => getInitialState(), []);
+  const [colors, setColors] = useState(persistedState.colors);
   const [scenario, setScenario] = useState('future');
-  const [scenarioData, setScenarioData] = useState(getInitialState);
+  const [scenarioData, setScenarioData] = useState(persistedState.scenarios);
   const [search, setSearch] = useState('');
   const [filterDepartment, setFilterDepartment] = useState('');
   const [showNotes, setShowNotes] = useState(false);
@@ -35,6 +44,8 @@ function App() {
   const [editMode, setEditMode] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [printMode, setPrintMode] = useState('presentation');
+  const [printScale, setPrintScale] = useState(1);
+  const chartRef = useRef(null);
 
   const roles = scenarioData[scenario] || [];
   const departments = useMemo(() => [...new Set(roles.map((r) => r.department))].sort(), [roles]);
@@ -44,8 +55,29 @@ function App() {
   const selected = roles.find((r) => r.id === selectedId) || null;
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(scenarioData));
-  }, [scenarioData]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios: scenarioData, colors }));
+  }, [scenarioData, colors]);
+
+  useEffect(() => {
+    const fitPrintScale = () => {
+      if (!chartRef.current) return;
+      const rect = chartRef.current.getBoundingClientRect();
+      const availableWidth = window.innerWidth - 16;
+      const availableHeight = window.innerHeight - 16;
+      const widthScale = availableWidth / rect.width;
+      const heightScale = availableHeight / rect.height;
+      setPrintScale(Math.min(1, widthScale, heightScale));
+    };
+
+    const resetPrintScale = () => setPrintScale(1);
+    window.addEventListener('beforeprint', fitPrintScale);
+    window.addEventListener('afterprint', resetPrintScale);
+
+    return () => {
+      window.removeEventListener('beforeprint', fitPrintScale);
+      window.removeEventListener('afterprint', resetPrintScale);
+    };
+  }, []);
 
   const updateRole = (updated) => {
     const isSelfManager = updated.reportsTo === updated.id;
@@ -131,7 +163,7 @@ function App() {
   };
 
   return (
-    <div className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'}`}>
+    <div className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'}`} style={{ '--print-scale': printScale }}>
       <header className="page-header no-print">
         <h1>Org Chart Editor</h1>
         <p>Editable, printable org chart built from one-time Excel imports and managed in-browser.</p>
@@ -177,6 +209,7 @@ function App() {
         showNotes={showNotes || printMode === 'detailed'}
         showExtras={showExtras || printMode === 'detailed'}
         isEditMode={editMode}
+        chartRef={chartRef}
       />
       <EditorPanel
         selected={selected}

@@ -4,8 +4,9 @@
   background: #f7f9fc;
 }
 * { box-sizing: border-box; }
+html, body, #root { height: 100%; }
 body { margin: 0; }
-.app { padding: 1rem; }
+.app { padding: 1rem; min-height: 100%; }
 .page-header h1 { margin: 0; }
 .page-header p { margin: 0.4rem 0 1rem; color: #5a657d; }
 .toolbar {
@@ -25,7 +26,22 @@ body { margin: 0; }
 .legend { margin: 0.5rem 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .pill { padding: 0.2rem 0.5rem; background: #fff; border: 1px solid #ccd4e4; border-radius: 999px; font-size: 0.75rem; }
 .pill.contractor { border-style: dashed; }
-.org-chart-wrap { overflow: auto; border: 1px solid #d8e0f0; border-radius: 12px; background: white; padding: 1rem; padding-bottom: 3rem; }
+.org-chart-wrap {
+  overflow: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 220px);
+  min-height: 420px;
+  border: 1px solid #d8e0f0;
+  border-radius: 12px;
+  background: white;
+  padding: 1rem;
+  padding-bottom: 3rem;
+}
+.org-chart {
+  width: max-content;
+  min-width: 100%;
+  transform-origin: top left;
+}
 .org-chart ul {
   position: relative;
   padding-top: 1.25rem;
@@ -113,14 +129,26 @@ body { margin: 0; }
 .inline-checks input { width: auto; }
 .panel-actions { margin-top: 0.8rem; display: flex; gap: 0.5rem; }
 .panel-actions .danger { background: #a31f1f; color: #fff; border: none; padding: 0.4rem 0.75rem; border-radius: 6px; }
+.empty-state { margin: 0; padding: 2rem; color: #5c6680; text-align: center; }
 
 @media print {
   @page { size: 11in 17in landscape; margin: 0.3in; }
-  body { background: #fff; }
+  html, body, #root, .app { height: auto; }
+  body { background: #fff; overflow: visible !important; }
   .no-print { display: none !important; }
   .app { padding: 0; }
-  .org-chart-wrap { border: none; padding: 0; overflow: visible; }
-  .org-chart { transform-origin: top left; }
+  .org-chart-wrap {
+    border: none;
+    padding: 0;
+    overflow: visible !important;
+    max-height: none;
+    min-height: 0;
+  }
+  .org-chart {
+    width: max-content;
+    min-width: 0;
+    transform: scale(var(--print-scale, 1));
+  }
   .org-node { box-shadow: none; break-inside: avoid; page-break-inside: avoid; min-width: 1.9in; max-width: 2.35in; font-size: 10pt; }
   .print-presentation .detail-list,
   .print-presentation .tag-row,
@@ -128,4 +156,3 @@ body { margin: 0; }
   .print-detailed .detail-list,
   .print-detailed .tag-row { display: block; }
 }
-.empty-state { margin: 0; padding: 2rem; color: #5c6680; text-align: center; }
