@@ -1,0 +1,1534 @@
+{
+  "source": {
+    "future": "future_org_chart.xlsx (one-time import)",
+    "current": "current_org_chart.xlsx (reference import)"
+  },
+  "scenarios": {
+    "current": [
+      {
+        "id": "R001",
+        "name": "Nichole Jones",
+        "title": "VP Manufacturing North America",
+        "department": "All Operations",
+        "reportsTo": null,
+        "notes": [
+          "Top operations leader from current org chart"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "All Operations"
+      },
+      {
+        "id": "R002",
+        "name": "Anthony Denina",
+        "title": "Director Packaging Operations",
+        "department": "Packaging Operations",
+        "reportsTo": "R001",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R003",
+        "name": "Kim Hicks",
+        "title": "Director Processing Operations",
+        "department": "Processing Operations",
+        "reportsTo": "R001",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R004",
+        "name": "Amy Ruiz",
+        "title": "Manager Manufacturing COE",
+        "department": "Manufacturing COE",
+        "reportsTo": "R001",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R005",
+        "name": "Edward Ballo",
+        "title": "Contractor - Executive Support",
+        "department": "Executive Support",
+        "reportsTo": "R001",
+        "notes": [
+          "Contractor role"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Executive Support"
+      },
+      {
+        "id": "R006",
+        "name": "Mitch",
+        "title": "Contractor - Reliability Maintenance",
+        "department": "Reliability",
+        "reportsTo": "R005",
+        "notes": [
+          "Contractor role"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Reliability"
+      },
+      {
+        "id": "R007",
+        "name": "Haley Buckley",
+        "title": "Manager Production Operations",
+        "department": "Packaging Operations",
+        "reportsTo": "R002",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R008",
+        "name": "Bernard Filic",
+        "title": "Manager Packaging Operations",
+        "department": "Packaging Operations",
+        "reportsTo": "R002",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R009",
+        "name": "Kimberly Nunez",
+        "title": "Manager Warehouse",
+        "department": "Warehouse",
+        "reportsTo": "R002",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Warehouse"
+      },
+      {
+        "id": "R010",
+        "name": "Joe Primm",
+        "title": "Team Lead IV - Reliability",
+        "department": "Reliability",
+        "reportsTo": "R002",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Reliability"
+      },
+      {
+        "id": "R011",
+        "name": "Jade Castle",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R007",
+        "notes": [
+          "1st shift"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R012",
+        "name": "Ron Peterson",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R007",
+        "notes": [
+          "2nd shift"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R013",
+        "name": "Dat",
+        "title": "Contractor Engineer",
+        "department": "Engineering",
+        "reportsTo": "R007",
+        "notes": [
+          "Contractor role"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Engineering"
+      },
+      {
+        "id": "R014",
+        "name": "Juan Ramirez",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R008",
+        "notes": [
+          "Mon-Wed day"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R015",
+        "name": "Shane Bishop",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R008",
+        "notes": [
+          "Mon-Wed night"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R016",
+        "name": "Open Role",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R008",
+        "notes": [
+          "Thu-Sat day open role from current org chart"
+        ],
+        "statusTags": [
+          "vacancy"
+        ],
+        "extraLines": [],
+        "isVacant": true,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R017",
+        "name": "Tim Riggle",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R008",
+        "notes": [
+          "Thu-Sat night"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R018",
+        "name": "Michael Orrson",
+        "title": "Team Lead II",
+        "department": "Warehouse",
+        "reportsTo": "R009",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Warehouse"
+      },
+      {
+        "id": "R019",
+        "name": "Veronica Zapata",
+        "title": "Team Lead III - Central Weigh",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R020",
+        "name": "Mohamed Kambal",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Mon-Wed day"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R021",
+        "name": "Maria Anevel Bergreen",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Mon-Wed night"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R022",
+        "name": "Kashima Pollard",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Thu-Sat day"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R023",
+        "name": "BJ Jagatheesan",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Thu-Sat night"
+        ],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R024",
+        "name": "Adam Escalante",
+        "title": "Team Lead I - Sanitation",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R025",
+        "name": "Jerry Nunez",
+        "title": "Team Lead III - Reliability/PUR",
+        "department": "Processing Operations",
+        "reportsTo": "R003",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R026",
+        "name": "Erica Bush",
+        "title": "Manager Process Engineering",
+        "department": "Process Engineering",
+        "reportsTo": "R003",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R027",
+        "name": "James David Eaton",
+        "title": "Cleaning Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R028",
+        "name": "Emmie Fleck",
+        "title": "Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R029",
+        "name": "Manahor",
+        "title": "Principal Controls Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R030",
+        "name": "Chloe Neumeyer",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R031",
+        "name": "Kenia Cruz",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R032",
+        "name": "Chris Stevens",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R033",
+        "name": "Dominic Johnson",
+        "title": "Sr Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R034",
+        "name": "Scott Fitzsimmons",
+        "title": "Specialist PM/Work Orders",
+        "department": "Manufacturing COE",
+        "reportsTo": "R033",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R035",
+        "name": "Chris Smith",
+        "title": "Sr Specialist Training",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      }
+    ],
+    "future": [
+      {
+        "id": "R001",
+        "name": "Nichole Jones",
+        "title": "VP Manufacturing North America",
+        "department": "Executive",
+        "reportsTo": null,
+        "notes": [
+          "Assumed unchanged (not explicitly listed in future workbook)"
+        ],
+        "statusTags": [],
+        "extraLines": [
+          "Strategic Transformation"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Executive"
+      },
+      {
+        "id": "R002",
+        "name": "Anthony Denina",
+        "title": "Director Packaging Operations",
+        "department": "Packaging Operations",
+        "reportsTo": "R001",
+        "notes": [
+          "Future workbook suggests broader safety focus; kept core title for continuity"
+        ],
+        "statusTags": [],
+        "extraLines": [
+          "Safety",
+          "Quality",
+          "Delivery"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R003",
+        "name": "KIM HICKS",
+        "title": "Director - Packaging Operations",
+        "department": "Packaging Operations",
+        "reportsTo": "R001",
+        "notes": [
+          "Future workbook includes Kim in director-level data; reporting line assumed unchanged"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Packaging",
+          "Quality",
+          "SMED"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R004",
+        "name": "AMY RUIZ",
+        "title": "Manager - Manufacturing COE",
+        "department": "Manufacturing COE",
+        "reportsTo": "R001",
+        "notes": [
+          "Future workbook spells out transformation/engineering focus"
+        ],
+        "statusTags": [
+          "high potential"
+        ],
+        "extraLines": [
+          "Transformation",
+          "Engineering",
+          "Communications"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R005",
+        "name": "Edward Ballo",
+        "title": "Contractor",
+        "department": "Executive Support",
+        "reportsTo": "R001",
+        "notes": [
+          "Assumed retained"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Executive Support"
+      },
+      {
+        "id": "R006",
+        "name": "Mitch",
+        "title": "Contractor - Reliability Maintenance",
+        "department": "Executive Support",
+        "reportsTo": "R005",
+        "notes": [
+          "Moved under Edward Ballo for future state"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Executive Support"
+      },
+      {
+        "id": "R007",
+        "name": "Haley Buckley",
+        "title": "Mgr Production Ops",
+        "department": "Packaging Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Future workbook indicates expanded scope (Cell 1/2/3)"
+        ],
+        "statusTags": [
+          "promotable"
+        ],
+        "extraLines": [
+          "Cell 2",
+          "Quality",
+          "Safety"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R008",
+        "name": "Bernard Filic",
+        "title": "Mgr Packaging Ops",
+        "department": "Packaging Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Future workbook indicates broader warehouse/processing/packaging scope"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Cell 1 & 3",
+          "Quality",
+          "Safety"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R009",
+        "name": "KIMBERLY NUNEZ",
+        "title": "R3 EHS Manager",
+        "department": "Support",
+        "reportsTo": "R001",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Warehouse",
+          "Takt",
+          "Safety"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Support"
+      },
+      {
+        "id": "R010",
+        "name": "Joe Primm",
+        "title": "Team Lead IV - Reliability",
+        "department": "Reliability",
+        "reportsTo": "R008",
+        "notes": [
+          "Future workbook categorizes as reliability team lead"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Ops",
+          "Safety",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Reliability"
+      },
+      {
+        "id": "R011",
+        "name": "Jade Castle",
+        "title": "Mgr Warehouse",
+        "department": "Packaging Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "Future workbook keeps TL scope"
+        ],
+        "statusTags": [
+          "too new"
+        ],
+        "extraLines": [
+          "Ops",
+          "Safety",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R012",
+        "name": "Ron Petersen",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R007",
+        "notes": [
+          "Last name spelled Petersen in future workbook"
+        ],
+        "statusTags": [],
+        "extraLines": [
+          "Operations",
+          "Procedures",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R013",
+        "name": "Dat",
+        "title": "Contractor Engineer",
+        "department": "Engineering",
+        "reportsTo": "R007",
+        "notes": [
+          "Assumed retained"
+        ],
+        "statusTags": [
+          "contractor"
+        ],
+        "extraLines": [],
+        "isVacant": false,
+        "isContractor": true,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Engineering"
+      },
+      {
+        "id": "R014",
+        "name": "Juan Rimirez",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R011",
+        "notes": [
+          "Don't know if he is staying"
+        ],
+        "statusTags": [],
+        "extraLines": [
+          "Operations",
+          "Safety",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R015",
+        "name": "Shane Bishop",
+        "title": "Shift Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R008",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Ops",
+          "Safety",
+          "SMED"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R016",
+        "name": "Open Role",
+        "title": "PKG Reliability Team Lead",
+        "department": "Packaging Operations",
+        "reportsTo": "R003",
+        "notes": [
+          "No confirmed assignee in future workbook"
+        ],
+        "statusTags": [
+          "vacancy"
+        ],
+        "extraLines": [],
+        "isVacant": true,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R017",
+        "name": "Open",
+        "title": "Team Lead II",
+        "department": "Packaging Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "vacancy"
+        ],
+        "extraLines": [
+          "Thu-Sat Night"
+        ],
+        "isVacant": true,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Packaging Operations"
+      },
+      {
+        "id": "R018",
+        "name": "Michael Orrson",
+        "title": "Business Analyst",
+        "department": "Warehouse",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Op Ex",
+          "CI",
+          "SMED"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Warehouse"
+      },
+      {
+        "id": "R019",
+        "name": "Veronica Zapata",
+        "title": "Team Lead III - Central Weigh",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Central Weigh",
+          "Safety",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R020",
+        "name": "Mohamed Kambal",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "promotable"
+        ],
+        "extraLines": [
+          "Operations",
+          "Quality",
+          "Safety"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R021",
+        "name": "Maria Bergreen",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [
+          "Future workbook omits middle name"
+        ],
+        "statusTags": [
+          "placement issue"
+        ],
+        "extraLines": [
+          "Operations",
+          "Quality",
+          "Safety"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R022",
+        "name": "Kashima Pollard",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Operations",
+          "Quality",
+          "Procedures"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R023",
+        "name": "BJ Jagatheesan",
+        "title": "Team Lead II",
+        "department": "Processing Operations",
+        "reportsTo": "R008",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Ops",
+          "SMED",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R024",
+        "name": "Adam Escalante",
+        "title": "Team Lead I",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Sanitation",
+          "Quality",
+          "Takt"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R025",
+        "name": "Jerry Nunez",
+        "title": "Team Lead III",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Reliability",
+          "CMMS",
+          "Operations"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R026",
+        "name": "ERICA BUSH",
+        "title": "Manager - Processing Operations",
+        "department": "Processing Operations",
+        "reportsTo": "R001",
+        "notes": [
+          "Future workbook lists engineering leader in high-potential category"
+        ],
+        "statusTags": [
+          "high potential"
+        ],
+        "extraLines": [
+          "Safety",
+          "Quality",
+          "Delivery"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Processing Operations"
+      },
+      {
+        "id": "R027",
+        "name": "James-David Eaton",
+        "title": "Cleaning Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [
+          "Hyphenated first name in future workbook"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Engineering",
+          "Quality",
+          "Recipe Opt."
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R028",
+        "name": "Emmie Fleck",
+        "title": "Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [
+          "Assumed retained (not listed explicitly)"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Engineering",
+          "Process",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R029",
+        "name": "Manahor",
+        "title": "Principal Controls Engineer",
+        "department": "Process Engineering",
+        "reportsTo": "R026",
+        "notes": [
+          "Assumed retained (not listed explicitly)"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Controls",
+          "Engineering",
+          "Reliability"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Process Engineering"
+      },
+      {
+        "id": "R030",
+        "name": "Chloe Neumeyer",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Engineering",
+          "Change Mgmt",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R031",
+        "name": "Kenia Cruz",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "SMED",
+          "Value Streams",
+          "Validation"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R032",
+        "name": "Christopher Stevens",
+        "title": "Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [
+          "Future workbook uses full first name Christopher"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Value Streams",
+          "CI",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R033",
+        "name": "Dominic Johnson",
+        "title": "Sr Engineer Operations",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "Reliability",
+          "CI",
+          "Quality"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R034",
+        "name": "Scott Fitzsimmons",
+        "title": "Specialist PM/Work Orders",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [
+          "Assumed retained (not listed explicitly)"
+        ],
+        "statusTags": [
+          "valued contributor"
+        ],
+        "extraLines": [
+          "PM",
+          "Work Orders",
+          "Reliability"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      },
+      {
+        "id": "R035",
+        "name": "Chris Smith",
+        "title": "Sr Specialist Training",
+        "department": "Manufacturing COE",
+        "reportsTo": "R004",
+        "notes": [
+          "Future workbook suggests increased communications/culture emphasis"
+        ],
+        "statusTags": [
+          "promotable"
+        ],
+        "extraLines": [
+          "Training",
+          "Culture",
+          "Communications"
+        ],
+        "isVacant": false,
+        "isContractor": false,
+        "isHidden": false,
+        "boxStyle": {
+          "borderStyle": "solid",
+          "borderWidth": 1
+        },
+        "colorCategory": "Manufacturing COE"
+      }
+    ]
+  }
+}
