@@ -166,6 +166,23 @@ body { margin: 0; }
     zoom: var(--print-scale, 1);
   }
   .org-node { box-shadow: none; break-inside: avoid; page-break-inside: avoid; min-width: 1.9in; max-width: 2.35in; font-size: 10pt; }
+
+  /* Strengthen connector rendering in print */
+  .org-chart li::before,
+  .org-chart li::after {
+    border-top: 1.5px solid #6d7fa6 !important;
+    height: 1.35rem;
+  }
+  .org-chart li::after,
+  .org-chart ul ul::before {
+    border-left: 1.5px solid #6d7fa6 !important;
+  }
+  .org-chart li:last-child::before {
+    border-right: 1.5px solid #6d7fa6 !important;
+  }
+  .org-chart ul ul::before {
+    height: 1.35rem;
+  }
   .print-presentation .detail-list,
   .print-presentation .tag-row,
   .print-presentation .edit-hint { display: none; }
