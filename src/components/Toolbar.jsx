@@ -23,9 +23,7 @@ function Toolbar({
   onSave,
   saveStatus,
   onAdd,
-  onExportJson,
   onExportCsv,
-  onImportJson,
   onImportExcel,
   onReset,
   onPrint,
@@ -56,9 +54,7 @@ function Toolbar({
       <button onClick={onSave}>Save Changes</button>
       <span className="save-status">{saveStatus}</span>
       <button onClick={onAdd}>Add Box</button>
-      <button onClick={onExportJson}>Export JSON</button>
       <button onClick={onExportCsv}>Export CSV</button>
-      <label className="file-button">Import JSON<input type="file" accept="application/json" onChange={onImportJson} /></label>
       <label className="file-button">Import Excel<input type="file" accept=".xlsx,.xls" onChange={onImportExcel} /></label>
       <button onClick={onReset}>Reset Data</button>
       <button onClick={onPrint}>Print 11x17</button>

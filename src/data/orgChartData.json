@@ -712,7 +712,7 @@
         ],
         "isVacant": false,
         "isContractor": false,
-        "isHidden": false,
+        "isHidden": true,
         "boxStyle": {
           "borderStyle": "solid",
           "borderWidth": 1
@@ -896,7 +896,7 @@
         "name": "Joe Primm",
         "title": "Team Lead IV - Reliability",
         "department": "Reliability",
-        "reportsTo": "R008",
+        "reportsTo": "R007",
         "notes": [
           "Future workbook categorizes as reliability team lead"
         ],
@@ -960,7 +960,7 @@
         ],
         "isVacant": false,
         "isContractor": false,
-        "isHidden": false,
+        "isHidden": true,
         "boxStyle": {
           "borderStyle": "solid",
           "borderWidth": 1
@@ -982,7 +982,7 @@
         "extraLines": [],
         "isVacant": false,
         "isContractor": true,
-        "isHidden": false,
+        "isHidden": true,
         "boxStyle": {
           "borderStyle": "solid",
           "borderWidth": 1
@@ -991,27 +991,23 @@
       },
       {
         "id": "R014",
-        "name": "Juan Rimirez",
-        "title": "Shift Lead",
-        "department": "Packaging Operations",
-        "reportsTo": "R011",
-        "notes": [
-          "Don't know if he is staying"
+        "name": "Open",
+        "title": "Team Lead",
+        "department": "Processing Operations",
+        "reportsTo": "R026",
+        "notes": [],
+        "statusTags": [
+          "vacancy"
         ],
-        "statusTags": [],
-        "extraLines": [
-          "Operations",
-          "Safety",
-          "Quality"
-        ],
-        "isVacant": false,
+        "extraLines": [],
+        "isVacant": true,
         "isContractor": false,
         "isHidden": false,
         "boxStyle": {
           "borderStyle": "solid",
           "borderWidth": 1
         },
-        "colorCategory": "Packaging Operations"
+        "colorCategory": "Processing Operations"
       },
       {
         "id": "R015",
@@ -1064,7 +1060,7 @@
         "name": "Open",
         "title": "Team Lead II",
         "department": "Packaging Operations",
-        "reportsTo": "R026",
+        "reportsTo": "R007",
         "notes": [],
         "statusTags": [
           "vacancy"
@@ -1108,7 +1104,7 @@
       {
         "id": "R019",
         "name": "Veronica Zapata",
-        "title": "Team Lead III - Central Weigh",
+        "title": "Team Lead II - Central Weigh",
         "department": "Processing Operations",
         "reportsTo": "R026",
         "notes": [],
@@ -1231,8 +1227,8 @@
         "id": "R024",
         "name": "Adam Escalante",
         "title": "Team Lead I",
-        "department": "Processing Operations",
-        "reportsTo": "R026",
+        "department": "Sanitation",
+        "reportsTo": "R014",
         "notes": [],
         "statusTags": [
           "valued contributor"
@@ -1249,13 +1245,13 @@
           "borderStyle": "solid",
           "borderWidth": 1
         },
-        "colorCategory": "Processing Operations"
+        "colorCategory": "Sanitation"
       },
       {
         "id": "R025",
         "name": "Jerry Nunez",
         "title": "Team Lead III",
-        "department": "Processing Operations",
+        "department": "PRC Reliability",
         "reportsTo": "R026",
         "notes": [],
         "statusTags": [

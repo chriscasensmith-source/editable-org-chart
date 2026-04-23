@@ -69,8 +69,11 @@ function App() {
       const chartEl = chartRef.current;
       const contentWidth = chartEl.scrollWidth;
       const contentHeight = chartEl.scrollHeight;
-      const availableWidth = window.innerWidth - 16;
-      const availableHeight = window.innerHeight - 16;
+      const inch = 96;
+      const pageWidth = (17 - 0.6) * inch;
+      const pageHeight = (11 - 0.6) * inch;
+      const availableWidth = pageWidth;
+      const availableHeight = pageHeight;
       const widthScale = availableWidth / contentWidth;
       const heightScale = availableHeight / contentHeight;
       setPrintScale(Math.min(1, widthScale, heightScale));
@@ -123,26 +126,8 @@ function App() {
     setSelectedId(copy.id);
   };
 
-  const exportJson = () => downloadFile('org-chart-updated.json', JSON.stringify({ scenario, scenarios: scenarioData, colors }, null, 2));
   const exportCsv = () => downloadFile('org-chart-updated.csv', rolesToCsv(roles), 'text/csv');
 
-  const importJson = async (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      const parsed = JSON.parse(await file.text());
-      if (parsed.scenarios && typeof parsed.scenarios === 'object') {
-        const next = Object.fromEntries(Object.entries(parsed.scenarios).map(([key, importedRoles]) => [key, (importedRoles || []).map(normalizeRole)]));
-        setScenarioData(next);
-      } else if (Array.isArray(parsed.roles)) {
-        setScenarioData((prev) => ({ ...prev, [scenario]: parsed.roles.map(normalizeRole) }));
-      }
-      if (parsed.colors && typeof parsed.colors === 'object') setColors(parsed.colors);
-    } catch {
-      alert('Invalid JSON file.');
-    }
-    event.target.value = '';
-  };
 
   const importExcel = async (event) => {
     const file = event.target.files?.[0];
@@ -195,9 +180,7 @@ function App() {
         onSave={saveToBrowser}
         saveStatus={saveStatus}
         onAdd={addRole}
-        onExportJson={exportJson}
         onExportCsv={exportCsv}
-        onImportJson={importJson}
         onImportExcel={importExcel}
         onReset={resetData}
         onPrint={() => {
