@@ -180,6 +180,14 @@ body { margin: 0; }
   .org-chart li:last-child::before {
     border-right: 1.5px solid #6d7fa6 !important;
   }
+  .org-chart li:first-child::before,
+  .org-chart li:last-child::after {
+    border-top: 1.5px solid #6d7fa6 !important;
+  }
+  .org-chart li:first-child::after,
+  .org-chart li:last-child::before {
+    border-radius: 0 !important;
+  }
   .org-chart ul ul::before {
     height: 1.35rem;
   }
