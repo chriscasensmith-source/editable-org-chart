@@ -1,0 +1,105 @@
+export const defaultDepartmentColors = {
+  Executive: '#DDEBFF',
+  'All Operations': '#DCE9FF',
+  'Packaging Operations': '#C9EED5',
+  'Processing Operations': '#E8EAA9',
+  'Manufacturing COE': '#DDD2F1',
+  Support: '#CDE8F7',
+  'Executive Support': '#E3E6ED',
+  Warehouse: '#F3DDE4',
+  Reliability: '#DDE2EE',
+  Engineering: '#D5DDF0',
+  'Process Engineering': '#CED7EF',
+  'PRC Reliability': '#E3DDE5',
+  Sanitation: '#69E39B',
+  General: '#F7F7F7',
+};
+
+export const normalizeRole = (role, index = 0) => ({
+  id: role.id || role.role_id || `R${String(index + 1).padStart(3, '0')}`,
+  name: role.name || role.employee_name || 'Open Role',
+  title: role.title || '',
+  department: role.department || 'General',
+  reportsTo: role.reportsTo || role.manager_role_id || null,
+  notes: Array.isArray(role.notes) ? role.notes : role.notes ? [String(role.notes)] : [],
+  statusTags: Array.isArray(role.statusTags) ? role.statusTags : role.statusTags ? [String(role.statusTags)] : [],
+  extraLines: Array.isArray(role.extraLines) ? role.extraLines : role.extraLines ? [String(role.extraLines)] : [],
+  isVacant: Boolean(role.isVacant),
+  isContractor: Boolean(role.isContractor),
+  isHidden: Boolean(role.isHidden),
+  boxStyle: {
+    borderStyle: role.boxStyle?.borderStyle || 'solid',
+    borderWidth: Number(role.boxStyle?.borderWidth || 1),
+  },
+  colorCategory: role.colorCategory || role.department || 'General',
+});
+
+export const buildTree = (roles) => {
+  const visible = roles.filter((r) => !r.isHidden);
+  const byId = new Map(visible.map((r) => [r.id, { ...r, children: [] }]));
+  const roots = [];
+  byId.forEach((node) => {
+    if (node.reportsTo && byId.has(node.reportsTo) && node.reportsTo !== node.id) {
+      byId.get(node.reportsTo).children.push(node);
+    } else {
+      roots.push(node);
+    }
+  });
+  const sortByName = (arr) => {
+    arr.sort((a, b) => a.department.localeCompare(b.department) || a.name.localeCompare(b.name));
+    arr.forEach((node) => sortByName(node.children));
+  };
+  sortByName(roots);
+  return roots;
+};
+
+export const getDisplayRoleIds = (roles, search, filterDepartment) => {
+  const query = search.trim().toLowerCase();
+  const byId = new Map(roles.map((r) => [r.id, r]));
+  const matches = roles.filter((r) => {
+    if (filterDepartment && r.department !== filterDepartment) return false;
+    if (!query) return true;
+    return `${r.name} ${r.title}`.toLowerCase().includes(query);
+  });
+
+  const keep = new Set();
+  matches.forEach((role) => {
+    keep.add(role.id);
+    let current = role;
+    while (current?.reportsTo && byId.has(current.reportsTo)) {
+      keep.add(current.reportsTo);
+      current = byId.get(current.reportsTo);
+    }
+  });
+
+  return keep;
+};
+
+export const downloadFile = (name, content, type = 'application/json') => {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+export const rolesToCsv = (roles) => {
+  const header = ['id', 'name', 'title', 'department', 'reportsTo', 'notes', 'statusTags', 'extraLines', 'isVacant', 'isContractor', 'isHidden', 'colorCategory'];
+  const rows = roles.map((r) => [
+    r.id,
+    r.name,
+    r.title,
+    r.department,
+    r.reportsTo ?? '',
+    (r.notes || []).join(' | '),
+    (r.statusTags || []).join(' | '),
+    (r.extraLines || []).join(' | '),
+    r.isVacant,
+    r.isContractor,
+    r.isHidden,
+    r.colorCategory || r.department,
+  ]);
+  return [header, ...rows].map((row) => row.map((v) => `"${String(v ?? '').replaceAll('"', '""')}"`).join(',')).join('\n');
+};
