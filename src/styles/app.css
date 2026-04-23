@@ -23,6 +23,12 @@ body { margin: 0; }
 .toolbar input, .toolbar select, .toolbar button, .file-button { font-size: 0.9rem; }
 .file-button input { display: none; }
 .file-button { border: 1px solid #cfd7e6; background: #fff; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; }
+
+.save-status {
+  font-size: 0.8rem;
+  color: #4e5a77;
+  min-width: 90px;
+}
 .legend { margin: 0.5rem 0 1rem; display: flex; align-items: center; gap: 0.5rem; }
 .pill { padding: 0.2rem 0.5rem; background: #fff; border: 1px solid #ccd4e4; border-radius: 999px; font-size: 0.75rem; }
 .pill.contractor { border-style: dashed; }
@@ -155,4 +161,12 @@ body { margin: 0; }
   .print-presentation .edit-hint { display: none; }
   .print-detailed .detail-list,
   .print-detailed .tag-row { display: block; }
+
+  .print-sections .org-chart {
+    transform: none !important;
+  }
+  .print-sections .org-chart > ul > li > ul > li {
+    break-before: page;
+    page-break-before: always;
+  }
 }

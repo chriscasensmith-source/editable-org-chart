@@ -7,7 +7,7 @@ import { parseExcelWorkbook } from './utils/excelImport';
 import { buildTree, defaultDepartmentColors, downloadFile, getDisplayRoleIds, normalizeRole, rolesToCsv } from './utils/orgChartUtils';
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
-const STORAGE_KEY = 'editable-org-chart-state-v2';
+const STORAGE_KEY = 'editable-org-chart-state-v3';
 
 const getInitialState = () => {
   try {
@@ -44,7 +44,9 @@ function App() {
   const [editMode, setEditMode] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [printMode, setPrintMode] = useState('presentation');
+  const [printLayout, setPrintLayout] = useState('fit');
   const [printScale, setPrintScale] = useState(1);
+  const [saveStatus, setSaveStatus] = useState('Saved');
   const chartRef = useRef(null);
 
   const roles = scenarioData[scenario] || [];
@@ -55,17 +57,22 @@ function App() {
   const selected = roles.find((r) => r.id === selectedId) || null;
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios: scenarioData, colors }));
+    setSaveStatus('Unsaved changes');
   }, [scenarioData, colors]);
 
   useEffect(() => {
     const fitPrintScale = () => {
-      if (!chartRef.current) return;
-      const rect = chartRef.current.getBoundingClientRect();
+      if (!chartRef.current || printLayout === 'sections') {
+        setPrintScale(1);
+        return;
+      }
+      const chartEl = chartRef.current;
+      const contentWidth = chartEl.scrollWidth;
+      const contentHeight = chartEl.scrollHeight;
       const availableWidth = window.innerWidth - 16;
       const availableHeight = window.innerHeight - 16;
-      const widthScale = availableWidth / rect.width;
-      const heightScale = availableHeight / rect.height;
+      const widthScale = availableWidth / contentWidth;
+      const heightScale = availableHeight / contentHeight;
       setPrintScale(Math.min(1, widthScale, heightScale));
     };
 
@@ -77,7 +84,12 @@ function App() {
       window.removeEventListener('beforeprint', fitPrintScale);
       window.removeEventListener('afterprint', resetPrintScale);
     };
-  }, []);
+  }, [printLayout]);
+
+  const saveToBrowser = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios: scenarioData, colors }));
+    setSaveStatus('Saved');
+  };
 
   const updateRole = (updated) => {
     const isSelfManager = updated.reportsTo === updated.id;
@@ -90,17 +102,7 @@ function App() {
 
   const addRole = () => {
     const id = `R${String(Date.now()).slice(-6)}`;
-    const role = normalizeRole(
-      {
-        id,
-        name: 'New Role',
-        title: 'Title',
-        department: 'General',
-        reportsTo: null,
-        isVacant: true,
-      },
-      0,
-    );
+    const role = normalizeRole({ id, name: 'New Role', title: 'Title', department: 'General', reportsTo: null, isVacant: true }, 0);
     setScenarioData((prev) => ({ ...prev, [scenario]: [...prev[scenario], role] }));
     setSelectedId(id);
   };
@@ -130,9 +132,7 @@ function App() {
     try {
       const parsed = JSON.parse(await file.text());
       if (parsed.scenarios && typeof parsed.scenarios === 'object') {
-        const next = Object.fromEntries(
-          Object.entries(parsed.scenarios).map(([key, importedRoles]) => [key, (importedRoles || []).map(normalizeRole)]),
-        );
+        const next = Object.fromEntries(Object.entries(parsed.scenarios).map(([key, importedRoles]) => [key, (importedRoles || []).map(normalizeRole)]));
         setScenarioData(next);
       } else if (Array.isArray(parsed.roles)) {
         setScenarioData((prev) => ({ ...prev, [scenario]: parsed.roles.map(normalizeRole) }));
@@ -160,10 +160,14 @@ function App() {
     setScenarioData(clone(startingData.scenarios));
     setColors(defaultDepartmentColors);
     setSelectedId(null);
+    setSaveStatus('Unsaved changes');
   };
 
   return (
-    <div className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'}`} style={{ '--print-scale': printScale }}>
+    <div
+      className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'} ${printLayout === 'sections' ? 'print-sections' : ''}`}
+      style={{ '--print-scale': printScale }}
+    >
       <header className="page-header no-print">
         <h1>Org Chart Editor</h1>
         <p>Editable, printable org chart built from one-time Excel imports and managed in-browser.</p>
@@ -186,13 +190,20 @@ function App() {
         setEditMode={setEditMode}
         printMode={printMode}
         setPrintMode={setPrintMode}
+        printLayout={printLayout}
+        setPrintLayout={setPrintLayout}
+        onSave={saveToBrowser}
+        saveStatus={saveStatus}
         onAdd={addRole}
         onExportJson={exportJson}
         onExportCsv={exportCsv}
         onImportJson={importJson}
         onImportExcel={importExcel}
         onReset={resetData}
-        onPrint={() => window.print()}
+        onPrint={() => {
+          saveToBrowser();
+          window.print();
+        }}
       />
       {showLegend && (
         <section className="legend no-print">
