@@ -17,9 +17,7 @@ const getInitialState = () => {
     if (!parsed || typeof parsed !== 'object') return { scenarios: clone(startingData.scenarios), colors: defaultDepartmentColors };
 
     const scenarios = parsed.scenarios && typeof parsed.scenarios === 'object'
-      ? Object.fromEntries(
-        Object.entries(parsed.scenarios).map(([key, roles]) => [key, Array.isArray(roles) ? roles.map(normalizeRole) : []]),
-      )
+      ? Object.fromEntries(Object.entries(parsed.scenarios).map(([key, roles]) => [key, Array.isArray(roles) ? roles.map(normalizeRole) : []]))
       : clone(startingData.scenarios);
 
     return {
@@ -44,14 +42,12 @@ function App() {
   const [editMode, setEditMode] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [printMode, setPrintMode] = useState('presentation');
-  const [printLayout, setPrintLayout] = useState('fit');
   const [printScale, setPrintScale] = useState(1);
   const [saveStatus, setSaveStatus] = useState('Saved');
   const chartRef = useRef(null);
 
   const roles = scenarioData[scenario] || [];
   const departments = useMemo(() => [...new Set(roles.map((r) => r.department))].sort(), [roles]);
-
   const displayRoleIds = useMemo(() => getDisplayRoleIds(roles, search, filterDepartment), [roles, search, filterDepartment]);
   const tree = useMemo(() => buildTree(roles.filter((r) => displayRoleIds.has(r.id))), [roles, displayRoleIds]);
   const selected = roles.find((r) => r.id === selectedId) || null;
@@ -62,7 +58,7 @@ function App() {
 
   useEffect(() => {
     const fitPrintScale = () => {
-      if (!chartRef.current || printLayout === 'sections') {
+      if (!chartRef.current) {
         setPrintScale(1);
         return;
       }
@@ -72,22 +68,19 @@ function App() {
       const inch = 96;
       const pageWidth = (17 - 0.6) * inch;
       const pageHeight = (11 - 0.6) * inch;
-      const availableWidth = pageWidth;
-      const availableHeight = pageHeight;
-      const widthScale = availableWidth / contentWidth;
-      const heightScale = availableHeight / contentHeight;
+      const widthScale = pageWidth / contentWidth;
+      const heightScale = pageHeight / contentHeight;
       setPrintScale(Math.min(1, widthScale, heightScale));
     };
 
     const resetPrintScale = () => setPrintScale(1);
     window.addEventListener('beforeprint', fitPrintScale);
     window.addEventListener('afterprint', resetPrintScale);
-
     return () => {
       window.removeEventListener('beforeprint', fitPrintScale);
       window.removeEventListener('afterprint', resetPrintScale);
     };
-  }, [printLayout]);
+  }, []);
 
   const saveToBrowser = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ scenarios: scenarioData, colors }));
@@ -95,8 +88,7 @@ function App() {
   };
 
   const updateRole = (updated) => {
-    const isSelfManager = updated.reportsTo === updated.id;
-    if (isSelfManager) {
+    if (updated.reportsTo === updated.id) {
       alert('A role cannot report to itself.');
       return;
     }
@@ -111,10 +103,7 @@ function App() {
   };
 
   const deleteRole = (id) => {
-    setScenarioData((prev) => ({
-      ...prev,
-      [scenario]: prev[scenario].filter((r) => r.id !== id).map((r) => (r.reportsTo === id ? { ...r, reportsTo: null } : r)),
-    }));
+    setScenarioData((prev) => ({ ...prev, [scenario]: prev[scenario].filter((r) => r.id !== id).map((r) => (r.reportsTo === id ? { ...r, reportsTo: null } : r)) }));
     setSelectedId(null);
   };
 
@@ -127,7 +116,6 @@ function App() {
   };
 
   const exportCsv = () => downloadFile('org-chart-updated.csv', rolesToCsv(roles), 'text/csv');
-
 
   const importExcel = async (event) => {
     const file = event.target.files?.[0];
@@ -149,10 +137,7 @@ function App() {
   };
 
   return (
-    <div
-      className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'} ${printLayout === 'sections' ? 'print-sections' : ''}`}
-      style={{ '--print-scale': printScale }}
-    >
+    <div className={`app ${printMode === 'detailed' ? 'print-detailed' : 'print-presentation'}`} style={{ '--print-scale': printScale }}>
       <header className="page-header no-print">
         <h1>Org Chart Editor</h1>
         <p>Editable, printable org chart built from one-time Excel imports and managed in-browser.</p>
@@ -175,8 +160,6 @@ function App() {
         setEditMode={setEditMode}
         printMode={printMode}
         setPrintMode={setPrintMode}
-        printLayout={printLayout}
-        setPrintLayout={setPrintLayout}
         onSave={saveToBrowser}
         saveStatus={saveStatus}
         onAdd={addRole}

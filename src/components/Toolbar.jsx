@@ -18,8 +18,6 @@ function Toolbar({
   setEditMode,
   printMode,
   setPrintMode,
-  printLayout,
-  setPrintLayout,
   onSave,
   saveStatus,
   onAdd,
@@ -46,10 +44,6 @@ function Toolbar({
       <select value={printMode} onChange={(e) => setPrintMode(e.target.value)}>
         <option value="presentation">Print: Presentation</option>
         <option value="detailed">Print: Detailed</option>
-      </select>
-      <select value={printLayout} onChange={(e) => setPrintLayout(e.target.value)}>
-        <option value="fit">Print Layout: Fit to page</option>
-        <option value="sections">Print Layout: Section pages</option>
       </select>
       <button onClick={onSave}>Save Changes</button>
       <span className="save-status">{saveStatus}</span>

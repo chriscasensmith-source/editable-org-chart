@@ -138,11 +138,20 @@ body { margin: 0; }
 .empty-state { margin: 0; padding: 2rem; color: #5c6680; text-align: center; }
 
 @media print {
-  @page { size: 11in 17in landscape; margin: 0.3in; }
+  @page { size: 17in 11in; margin: 0.3in; }
   html, body, #root, .app { height: auto; }
   body { background: #fff; overflow: visible !important; }
   .no-print { display: none !important; }
   .app { padding: 0; }
+  .app,
+  .org-chart-wrap,
+  .org-chart,
+  .org-node,
+  .tag,
+  .pill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   .org-chart-wrap {
     border: none;
     padding: 0;
@@ -153,7 +162,8 @@ body { margin: 0; }
   .org-chart {
     width: max-content;
     min-width: 0;
-    transform: scale(var(--print-scale, 1));
+    transform: none !important;
+    zoom: var(--print-scale, 1);
   }
   .org-node { box-shadow: none; break-inside: avoid; page-break-inside: avoid; min-width: 1.9in; max-width: 2.35in; font-size: 10pt; }
   .print-presentation .detail-list,
@@ -161,12 +171,4 @@ body { margin: 0; }
   .print-presentation .edit-hint { display: none; }
   .print-detailed .detail-list,
   .print-detailed .tag-row { display: block; }
-
-  .print-sections .org-chart {
-    transform: none !important;
-  }
-  .print-sections .org-chart > ul > li > ul > li {
-    break-before: page;
-    page-break-before: always;
-  }
 }
